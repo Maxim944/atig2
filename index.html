@@ -224,6 +224,15 @@ autoTimer=setTimeout(()=>{
 },15000);
 
 setState('idle');showMsg('Нажмите на сферу');msgEl.classList.add('show');
+  // РАЗБЛОКИРОВКА ЗВУКА
+document.addEventListener('click', function(){
+  const u=new SpeechSynthesisUtterance('');
+  u.volume=0; window.speechSynthesis.speak(u);
+},{once:true});
+document.addEventListener('touchstart', function(){
+  const u=new SpeechSynthesisUtterance('');
+  u.volume=0; window.speechSynthesis.speak(u);
+},{once:true});
 </script>
 </body>
 </html>
