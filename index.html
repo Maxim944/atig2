@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ATIG</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ATIG">
+<meta name="theme-color" content="#000510">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#000510;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Raleway',sans-serif;overflow:hidden;color:#fff}
+.cosmos{position:fixed;inset:0;background:radial-gradient(ellipse 100% 60% at 50% 40%,#0a1a3e 0%,transparent 60%),radial-gradient(ellipse 70% 40% at 20% 70%,#060d24 0%,transparent 50%),#000208}
+.milkyway{position:absolute;inset:0;background:radial-gradient(ellipse 140% 25% at 50% 52%,rgba(120,160,255,0.12) 0%,rgba(80,120,220,0.06) 40%,transparent 70%);transform:rotate(-12deg) scale(1.6)}
+.star{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d) ease-in-out infinite var(--delay)}
+@keyframes tw{0%,100%{opacity:var(--lo);transform:scale(1)}50%{opacity:var(--hi);transform:scale(1.6)}}
+.page{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;width:100%;max-width:480px;padding:20px;gap:0}
+.greeting-title{font-size:13px;font-weight:300;letter-spacing:7px;color:rgba(200,230,255,0.6);text-transform:uppercase;text-shadow:0 0 30px rgba(120,200,255,0.5);margin-bottom:30px;opacity:0;animation:fadeIn 2s ease forwards 0.5s}
+@keyframes fadeIn{to{opacity:1}}
+.sphere-wrap{position:relative;width:240px;height:240px;cursor:pointer;margin-bottom:30px}
+.orbit{position:absolute;border-radius:50%;border:1.5px solid rgba(100,190,255,0.35);top:50%;left:50%;box-shadow:0 0 8px rgba(100,190,255,0.15)}
+.o1{width:240px;height:90px;margin-left:-120px;margin-top:-45px;animation:orb1 5s linear infinite}
+.o2{width:200px;height:76px;margin-left:-100px;margin-top:-38px;animation:orb2 7s linear infinite}
+.o3{width:170px;height:64px;margin-left:-85px;margin-top:-32px;animation:orb3 9s linear infinite}
+@keyframes orb1{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes orb2{from{transform:rotate(55deg)}to{transform:rotate(415deg)}}
+@keyframes orb3{from{transform:rotate(-55deg)}to{transform:rotate(305deg)}}
+.electron{position:absolute;width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 5px #fff,0 0 10px #7dd3fc;top:50%;left:50%;margin:-2.5px 0 0 -2.5px}
+.nucleus{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:55px;height:55px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffffff 0%,#bae6fd 30%,#38bdf8 60%,#0c4a6e 100%);box-shadow:0 0 20px rgba(125,211,252,0.9),0 0 50px rgba(56,189,248,0.6),0 0 100px rgba(14,165,233,0.4);animation:nucPulse 3s ease-in-out infinite;transition:all 0.5s ease}
+@keyframes nucPulse{0%,100%{box-shadow:0 0 20px rgba(125,211,252,0.9),0 0 50px rgba(56,189,248,0.6),0 0 100px rgba(14,165,233,0.4);transform:translate(-50%,-50%) scale(1)}50%{box-shadow:0 0 35px rgba(125,211,252,1),0 0 70px rgba(56,189,248,0.8),0 0 130px rgba(14,165,233,0.6);transform:translate(-50%,-50%) scale(1.08)}}
+.sphere-wrap.listening .nucleus{background:radial-gradient(circle at 35% 35%,#fff 0%,#fecaca 30%,#ef4444 60%,#7f1d1d 100%);box-shadow:0 0 30px rgba(252,165,165,1),0 0 60px rgba(239,68,68,0.7),0 0 100px rgba(220,38,38,0.5);animation:listenPulse 1s ease-in-out infinite}
+.sphere-wrap.listening .orbit{border-color:rgba(255,130,130,0.4)}
+.sphere-wrap.speaking .nucleus{background:radial-gradient(circle at 35% 35%,#fff 0%,#bbf7d0 30%,#22c55e 60%,#14532d 100%);box-shadow:0 0 30px rgba(134,239,172,1),0 0 60px rgba(34,197,94,0.7),0 0 100px rgba(21,128,61,0.5);animation:speakPulse 0.6s ease-in-out infinite}
+.sphere-wrap.speaking .orbit{border-color:rgba(134,239,172,0.4)}
+@keyframes listenPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.12)}}
+@keyframes speakPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.06)}}
+.status{text-align:center;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.status-msg{font-size:18px;font-weight:300;color:#fff;letter-spacing:1.5px;line-height:1.6;text-shadow:0 0 20px rgba(125,211,252,0.4);opacity:0;transform:translateY(10px);transition:all 0.5s ease;text-align:center;max-width:320px}
+.status-msg.show{opacity:1;transform:translateY(0)}
+.status-hint{font-size:9px;letter-spacing:5px;color:rgba(125,211,252,0.25);text-transform:uppercase}
+.wave{display:flex;gap:4px;align-items:center;height:24px;opacity:0;transition:opacity 0.3s}
+.wave.show{opacity:1}
+.wb{width:3px;background:rgba(252,165,165,0.7);border-radius:3px;animation:wa var(--s) ease-in-out infinite alternate}
+@keyframes wa{from{height:3px}to{height:22px}}
+/* КНОПКИ — всегда видимы */
+.langs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:340px;margin-top:16px}
+.pill{padding:5px 14px;border:1px solid rgba(125,211,252,0.3);border-radius:20px;font-size:11px;font-family:'Raleway',sans-serif;color:rgba(125,211,252,0.6);cursor:pointer;transition:all 0.2s;background:rgba(0,0,0,0.4);letter-spacing:1px}
+.pill:hover,.pill:active{border-color:rgba(125,211,252,0.7);color:rgba(125,211,252,1);background:rgba(14,60,120,0.3);box-shadow:0 0 10px rgba(125,211,252,0.2)}
+.nav-btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;opacity:0;transform:translateY(20px);transition:all 0.6s ease;pointer-events:none;margin-top:16px}
+.nav-btns.show{opacity:1;transform:translateY(0);pointer-events:auto}
+.nav-btn{padding:7px 18px;border:1px solid rgba(125,211,252,0.2);border-radius:25px;font-family:'Raleway',sans-serif;font-size:10px;font-weight:400;letter-spacing:2px;color:rgba(125,211,252,0.5);background:rgba(0,0,0,0.4);cursor:pointer;transition:all 0.3s;text-transform:uppercase}
+.nav-btn:hover{border-color:rgba(125,211,252,0.6);color:rgba(125,211,252,1);background:rgba(14,60,120,0.3)}
+</style>
+</head>
+<body>
+<div class="cosmos"><div class="milkyway"></div><div id="stars"></div></div>
+<div class="page">
+  <div class="greeting-title">Приветствие АТИГ</div>
+  <div class="sphere-wrap" id="sphere" onclick="handleTap()">
+    <div class="orbit o1"><div class="electron" id="e1"></div></div>
+    <div class="orbit o2"><div class="electron" id="e2"></div></div>
+    <div class="orbit o3"><div class="electron" id="e3"></div></div>
+    <div class="nucleus"></div>
+  </div>
+  <div class="status">
+    <div class="status-msg show" id="msg">Нажмите на сферу</div>
+    <div class="wave" id="wave">
+      <div class="wb" style="--s:.3s"></div><div class="wb" style="--s:.5s"></div>
+      <div class="wb" style="--s:.4s"></div><div class="wb" style="--s:.6s"></div>
+      <div class="wb" style="--s:.35s"></div><div class="wb" style="--s:.5s"></div>
+    </div>
+    <div class="status-hint" id="hint">ATIG · ОЖИДАНИЕ</div>
+  </div>
+  <!-- КНОПКИ ВСЕГДА ВИДНЫ -->
+  <div class="langs" id="langs">
+    <span class="pill" onclick="manualGreet('Привет')">Привет</span>
+    <span class="pill" onclick="manualGreet('Здравствуйте')">Здравствуйте</span>
+    <span class="pill" onclick="manualGreet('Hello')">Hello</span>
+    <span class="pill" onclick="manualGreet('Салам')">Салам</span>
+    <span class="pill" onclick="manualGreet('你好')">你好</span>
+    <span class="pill" onclick="manualGreet('Доброе утро')">Доброе утро</span>
+    <span class="pill" onclick="manualGreet('Добрый вечер')">Добрый вечер</span>
+    <span class="pill" onclick="manualGreet('Пока')">Пока</span>
+  </div>
+  <div class="nav-btns" id="navBtns">
+    <button class="nav-btn" onclick="showInfo('about')">О проекте</button>
+    <button class="nav-btn" onclick="showInfo('mission')">Миссия</button>
+    <button class="nav-btn" onclick="showInfo('contact')">Связаться</button>
+  </div>
+</div>
+<script>
+// Звёзды
+const st=document.getElementById('stars');
+for(let i=0;i<200;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*2+0.4;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*7}s;--delay:-${Math.random()*5}s;--lo:${0.05+Math.random()*0.2};--hi:${0.4+Math.random()*0.5};`;st.appendChild(s);}
+for(let i=0;i<20;i++){const s=document.createElement('div');s.className='star';s.style.cssText=`width:2.5px;height:2.5px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${3+Math.random()*5}s;--delay:-${Math.random()*4}s;--lo:0.3;--hi:1;box-shadow:0 0 4px #fff,0 0 8px rgba(150,210,255,0.6);`;st.appendChild(s);}
+
+// Электроны
+let t=0;
+setInterval(()=>{
+  t+=0.018;
+  const e1=document.getElementById('e1'),e2=document.getElementById('e2'),e3=document.getElementById('e3');
+  if(e1)e1.style.transform=`translate(${Math.cos(t)*118}px,${Math.sin(t)*43}px) translate(-50%,-50%)`;
+  if(e2)e2.style.transform=`translate(${Math.cos(-t*0.75)*98}px,${Math.sin(-t*0.75)*36}px) translate(-50%,-50%)`;
+  if(e3)e3.style.transform=`translate(${Math.cos(t*0.55+2)*83}px,${Math.sin(t*0.55+2)*30}px) translate(-50%,-50%)`;
+},16);
+
+// Словарь
+const GREETINGS=[
+  {re:/привет|хай/i,say:["Привет!","Привет-привет!","Рад тебя слышать!"]},
+  {re:/здравствуй(те)?/i,say:["Здравствуйте!","Здравствуй!"]},
+  {re:/доброе утро/i,say:["Доброе утро!","Утро доброе!"]},
+  {re:/добрый день/i,say:["Добрый день!"]},
+  {re:/добрый вечер/i,say:["Добрый вечер!","Вечер добрый!"]},
+  {re:/салам/i,say:["Салам!","Салам-салам!"]},
+  {re:/hello|hi\b|hey/i,say:["Hello!","Hi there!"]},
+  {re:/你好|ni hao/i,say:["你好！"]},
+  {re:/пока|bye/i,say:["До свидания!","Пока! Возвращайся."]},
+];
+const INFO={
+  about:"ATIG — глобальная платформа для сохранения человеческой памяти и наследия. От рождения до вечности.",
+  mission:"Миссия ATIG — сделать каждого человека лучше. Свет вселенной. Вечность.",
+  contact:"Для связи с командой ATIG — посетите сайт atig.ai",
+};
+function isGreeting(t){return GREETINGS.some(g=>g.re.test(t));}
+function getReply(t){for(const g of GREETINGS)if(g.re.test(t))return g.say[Math.floor(Math.random()*g.say.length)];return null;}
+
+const sphereEl=document.getElementById('sphere'),msgEl=document.getElementById('msg'),hintEl=document.getElementById('hint'),waveEl=document.getElementById('wave'),navBtns=document.getElementById('navBtns');
+let state='idle',recog=null,listenTimer=null,autoTimer=null,greeted=false;
+const hasMic='webkitSpeechRecognition' in window||'SpeechRecognition' in window;
+
+function showMsg(t){msgEl.classList.remove('show');setTimeout(()=>{msgEl.textContent=t;msgEl.classList.add('show');},150);}
+function setState(s){
+  state=s;
+  sphereEl.className='sphere-wrap '+(s==='idle'?'':s);
+  waveEl.className='wave'+(s==='listening'?' show':'');
+  hintEl.textContent={idle:'ATIG · ОЖИДАНИЕ',listening:'ATIG · СЛУШАЕТ',speaking:'ATIG · ГОВОРИТ'}[s]||'';
+}
+
+function speak(text,onDone){
+  if(!window.speechSynthesis){setTimeout(onDone||()=>{},2000);return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=/你好/.test(text)?'zh-CN':'ru-RU';
+  u.rate=0.95;u.pitch=1.05;u.volume=1;
+  u.onend=onDone||()=>{};u.onerror=onDone||()=>{};
+  speechSynthesis.speak(u);
+}
+
+function afterGreeting(){
+  greeted=true;setState('idle');
+  navBtns.classList.add('show');
+  scheduleListen(1500);
+}
+
+function respond(text){
+  clearTimeout(listenTimer);clearTimeout(autoTimer);
+  try{recog&&recog.abort();recog=null;}catch(e){}
+  if(isGreeting(text)){
+    const reply=getReply(text);
+    setState('speaking');showMsg(reply);
+    speak(reply,()=>{
+      if(!greeted){
+        setTimeout(()=>{
+          setState('speaking');
+          const intro="Я — ATIG. Персональный интеллект нового поколения. Рад приветствовать вас.";
+          showMsg(intro);
+          speak(intro,afterGreeting);
+        },400);
+      } else {
+        setState('idle');showMsg('...');scheduleListen(800);
+      }
+    });
+  } else {scheduleListen(500);}
+}
+
+function scheduleListen(d=800){clearTimeout(listenTimer);listenTimer=setTimeout(startListening,d);}
+
+function startListening(){
+  if(state==='speaking')return;
+  if(!hasMic){setState('listening');showMsg('Нажми на слово ниже');return;}
+  try{recog&&recog.abort();recog=null;}catch(e){}
+  setState('listening');showMsg(greeted?'...':'ATIG слушает…');
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const r=new SR();
+  r.lang='ru-RU';r.continuous=false;r.interimResults=false;
+  r.onresult=e=>{recog=null;respond(e.results[0][0].transcript.trim());};
+  r.onerror=()=>{recog=null;if(state!=='speaking')scheduleListen(1000);};
+  r.onend=()=>{recog=null;if(state!=='speaking')scheduleListen(600);};
+  try{r.start();recog=r;}catch(e){scheduleListen(1500);}
+}
+
+function handleTap(){
+  clearTimeout(autoTimer);
+  if(state==='speaking')return;
+  clearTimeout(listenTimer);
+  try{recog&&recog.abort();recog=null;}catch(e){}
+  startListening();
+}
+
+function manualGreet(word){
+  clearTimeout(listenTimer);clearTimeout(autoTimer);
+  try{recog&&recog.abort();recog=null;}catch(e){}
+  respond(word);
+}
+
+function showInfo(key){
+  clearTimeout(listenTimer);
+  try{recog&&recog.abort();recog=null;}catch(e){}
+  setState('speaking');
+  const text=INFO[key]||'';
+  showMsg(text);
+  speak(text,()=>{setState('idle');showMsg('...');scheduleListen(1000);});
+}
+
+// Автоприветствие через 15 сек
+autoTimer=setTimeout(()=>{
+  if(state==='idle'&&!greeted){
+    setState('speaking');
+    const m="Здравствуйте. Если хотите познакомиться — нажмите на сферу или кнопку ниже.";
+    showMsg(m);speak(m,()=>{setState('idle');showMsg('Нажмите на сферу');});
+  }
+},15000);
+
+setState('idle');showMsg('Нажмите на сферу');msgEl.classList.add('show');
+</script>
+</body>
+</html>
