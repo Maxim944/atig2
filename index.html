@@ -254,8 +254,8 @@ function startListening() {
   r.continuous = false;
   r.interimResults = false;
   r.onresult = function(e) { recog = null; respond(e.results[0][0].transcript); };
-  r.onerror  = function()  { recog = null; if (state !== 'speaking') scheduleListen(1000); };
-  r.onend    = function()  { recog = null; if (state !== 'speaking') scheduleListen(600); };
+  r.onerror  = function()  { recog = null; if (state !== 'speaking') scheduleListen(3000); };
+  r.onend    = function()  { recog = null; if (state !== 'speaking') scheduleListen(3000); };
   try { r.start(); recog = r; } catch(e) { scheduleListen(1500); }
 }
 
