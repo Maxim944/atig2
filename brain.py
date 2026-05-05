@@ -105,9 +105,20 @@ class Brain:
                 log.error(f"Gemini error: {e}")
                 return f"Ошибка: {str(e)[:200]}", actions_taken
 
-            parsed = self._parse_json(raw)
+                        parsed = self._parse_json(raw)
+            
+            # Если не удалось распарсить JSON, пробуем извлечь хоть какой-то текст
             if not parsed:
-                return raw, actions_taken
+                log.warning(f"Failed to parse JSON. Raw output: {raw[:100]}...")
+                # Очистка: если в тексте есть поле "response": "...", вытаскиваем его через regex
+                clean_match = re.search(r'"response":\s*"(.*?)"', raw, re.DOTALL)
+                if clean_match:
+                    return clean_match.group(1), actions_taken
+                # Если совсем всё плохо, отдаем текст как есть, но без тегов
+                return re.sub(r'\{.*\}', '', raw).strip() or "Я задумался, попробуй еще раз.", actions_taken
+
+            response_text = parsed.get("response", "")
+            # ... далее твой код без изменений до конца цикла ...
 
             response_text = parsed.get("response", "")
             tool_name = parsed.get("tool")
