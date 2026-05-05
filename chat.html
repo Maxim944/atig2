@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+Эль<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -119,13 +119,17 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
   </div>
 </div>
 <script>
-let ws=null,isThinking=false,thinkingEl=null;
-const sessionId='session_'+Date.now();
-function connect(){
-  const proto=location.protocol==='https:'?'wss:':'ws:';
-  ws=new WebSocket(`${proto}//${location.host}/ws/chat`);
-  ws.onopen=()=>setStatus(true);
-  ws.onmessage=(e)=>handleMessage(JSON.parse(e.data));
+let ws = null, isThinking = false, thinkingEl = null;
+
+// ПРОВЕРЯЕМ, ЕСТЬ ЛИ СЕССИЯ В ПАМЯТИ БРАУЗЕРА
+let sessionId = localStorage.getItem('atig_session_id');
+
+if (!sessionId) {
+    // Если нет, создаем новую и сохраняем навсегда
+    sessionId = 'session_' + Math.random().toString(36).substring(2, 15);
+    localStorage.setItem('atig_session_id', sessionId);
+}
+ ws.onmessage=(e)=>handleMessage(JSON.parse(e.data));
   ws.onclose=()=>{setStatus(false);setTimeout(connect,3000)};
   ws.onerror=()=>setStatus(false);
 }
