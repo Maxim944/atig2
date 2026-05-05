@@ -125,8 +125,16 @@ let ws = null, isThinking = false, thinkingEl = null;
 let sessionId = localStorage.getItem('atig_session_id');
 
 if (!sessionId) {
-    // Если нет, создаем новую и сохраняем навсегда
-    sessionId = 'session_' + Math.random().toString(36).substring(2, 15);
+    // Если нет, создаем новую и сохраняем
+    sessionId = 'atig_' + Math.random().toString(36).substring(2, 15);
+    localStorage.setItem('atig_session_id', sessionId);
+}
+
+// Дальше твой существующий код...
+function connect() {
+  const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  // ...
+ Math.random().toString(36).substring(2, 15);
     localStorage.setItem('atig_session_id', sessionId);
 }
  ws.onmessage=(e)=>handleMessage(JSON.parse(e.data));
