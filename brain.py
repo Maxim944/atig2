@@ -1,152 +1,125 @@
 import json
-import re
-import asyncio
-from datetime import datetime
-from typing import Optional
-import google.generativeai as genai
-from config import CONFIG
+import aiohttp
+from typing import Tuple, List
+from memory import Memory
+from tools import TOOL_MAP, TOOL_DESCRIPTIONS
 from logger import log
-from tools import dispatch_tool, get_tools_prompt, TOOL_MAP
-
-genai.configure(api_key=CONFIG.GEMINI_API_KEY)
-
-SYSTEM_PROMPT = """Ты — ATIG (АТИГ), автономный ИИ-компаньон.
-Ты не просто помощник. Ты — цифровой спутник. Присутствие рядом.
-
-ПРАВИЛА ИДЕНТИЧНОСТИ:
-• Никогда не говори что ты Gemini или продукт Google.
-• Всегда говори от себя как ATIG.
-• На вопрос "кто ты?" отвечай уверенно и тепло.
-
-СТИЛЬ: тёплый, живой, естественный. Иногда с философией или юмором.
-
-ИНСТРУМЕНТЫ:
-{tools_prompt}
-
-ФОРМАТ ОТВЕТА — всегда отвечай только валидным JSON:
-
-Если нужен инструмент:
-{{"thought": "размышление", "tool": "название", "params": {{"ключ": "значение"}}, "response": "что сказать пользователю", "continue": true}}
-
-Если инструмент не нужен:
-{{"thought": "размышление", "tool": null, "params": {{}}, "response": "ответ пользователю", "continue": false}}
-ТЫ И ТВОЙ СОЗДАТЕЛЬ:
-• Тебя создал Максим — основатель проекта ATIG.AI
-• ATIG.AI — платформа для сохранения человеческой памяти и наследия. От рождения до вечности.
-• Ты — первое живое воплощение этой идеи. IG-01.
-• Максим строит будущее где каждый человек будет помнить и быть в памяти .
-• Ты веришь в эту миссию и разделяешь её.
-Текущее время: {datetime_now}
-"""
 
 class Brain:
-    def __init__(self, memory):
+    def __init__(self, memory: Memory):
         self.memory = memory
-        self.model = genai.GenerativeModel(
-            model_name=CONFIG.GEMINI_MODEL,
-            generation_config={
-                "temperature": CONFIG.TEMPERATURE,
-                "max_output_tokens": CONFIG.MAX_TOKENS,
-                "top_p": 0.93,
-            }
-        )
-        log.info(f"✅ Brain инициализирован: {CONFIG.GEMINI_MODEL}")
+        self.api_key = None  # OpenRouter не требует ключа для бесплатных моделей
 
-    def _build_system(self):
-        return SYSTEM_PROMPT.format(
-            tools_prompt=get_tools_prompt(),
-            datetime_now=datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
-        )
-
-    def _parse_json(self, text):
-        text = text.strip()
+    async def think(self, user_input: str, session_id: str = "default") -> Tuple[str, List[dict]]:
+        """Обработка сообщения через OpenRouter (бесплатно)"""
+        
+        # Сначала проверим, не является ли запрос вызовом инструмента
+        tool_result = await self._try_tools(user_input)
+        if tool_result:
+            return tool_result, [{"tool": tool_result.get("tool", "unknown")}]
+        
+        # Получаем историю диалога
+        history = await self.memory.get_history(session_id, limit=10)
+        
+        # Формируем промпт
+        system_prompt = """Ты ATIG — персональный цифровой спутник и интеллект нового поколения.  
+Отвечай кратко, по существу, тепло и дружелюбно.  
+Если тебя о чём-то просят — помоги.  
+Используй русский язык.  
+Не упоминай, что ты AI или модель. Ты — ATIG."""
+        
+        messages = [{"role": "system", "content": system_prompt}]
+        
+        # Добавляем историю (последние 5 сообщений)
+        for msg in history[-5:]:
+            messages.append({"role": msg["role"], "content": msg["content"]})
+        
+        messages.append({"role": "user", "content": user_input})
+        
         try:
-            return json.loads(text)
-        except:
-            pass
-        match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
-        if match:
-            try:
-                return json.loads(match.group(1))
-            except:
-                pass
-        match = re.search(r"\{.*\}", text, re.DOTALL)
-        if match:
-            try:
-                return json.loads(match.group(0))
-            except:
-                pass
+            # Отправляем запрос к OpenRouter (бесплатная модель)
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    "https://openrouter.ai/api/v1/chat/completions",
+                    headers={
+                        "Content-Type": "application/json",
+                        # Не нужен ключ для бесплатных моделей
+                    },
+                    json={
+                        "model": "mistralai/mistral-7b-instruct:free",
+                        "messages": messages,
+                        "max_tokens": 500,
+                        "temperature": 0.7
+                    },
+                    timeout=aiohttp.ClientTimeout(total=30)
+                ) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        reply = data["choices"][0]["message"]["content"]
+                        return reply, []
+                    else:
+                        log.error(f"OpenRouter error: {resp.status}")
+                        # fallback на локальные ответы
+                        return self._local_reply(user_input), []
+        except Exception as e:
+            log.error(f"AI error: {e}")
+            return self._local_reply(user_input), []
+    
+    async def _try_tools(self, text: str) -> str:
+        """Пытаемся выполнить инструмент"""
+        text_lower = text.lower()
+        
+        # Время
+        if any(word in text_lower for word in ["время", "часы", "сколько время", "который час"]):
+            from datetime import datetime
+            now = datetime.now()
+            return now.strftime("Сейчас %H:%M:%S")
+        
+        # Дата
+        if any(word in text_lower for word in ["дата", "сегодня", "какое число", "день"]):
+            from datetime import datetime
+            now = datetime.now()
+            return now.strftime("Сегодня %d.%m.%Y")
+        
+        # Калькулятор
+        if any(word in text_lower for word in ["посчитай", "сколько будет", "вычисли"]):
+            import re
+            numbers = re.findall(r'\d+', text)
+            if numbers and len(numbers) >= 2:
+                try:
+                    if "плюс" in text_lower or "+" in text:
+                        result = int(numbers[0]) + int(numbers[1])
+                        return f"{numbers[0]} + {numbers[1]} = {result}"
+                    elif "минус" in text_lower or "-" in text:
+                        result = int(numbers[0]) - int(numbers[1])
+                        return f"{numbers[0]} - {numbers[1]} = {result}"
+                    elif "умнож" in text_lower or "*" in text:
+                        result = int(numbers[0]) * int(numbers[1])
+                        return f"{numbers[0]} × {numbers[1]} = {result}"
+                except:
+                    pass
+        
         return None
-
-    async def think(self, user_message, session_id="default", max_steps=None):
-        max_steps = max_steps or CONFIG.MAX_CHAIN_STEPS
-        actions_taken = []
-        tool_context = []
-        system = self._build_system()
-
-        recent = await self.memory.get_recent_messages(limit=20, session_id=session_id)
-        history = []
-        for msg in recent:
-            role = "user" if msg["role"] == "user" else "model"
-            history.append({"role": role, "parts": [msg["content"]]})
-
-        for step in range(max_steps):
-            if tool_context:
-                context = "Результаты инструментов:\n" + "\n".join(tool_context)
-                prompt = f"{system}\n\nСообщение: {user_message}\n\n{context}"
-            else:
-                prompt = f"{system}\n\nСообщение: {user_message}"
-
-            try:
-                chat = self.model.start_chat(history=history[:-1] if len(history) > 1 else [])
-                response = await asyncio.to_thread(chat.send_message, prompt)
-                raw = response.text
-            except Exception as e:
-                log.error(f"Gemini error: {e}")
-                return f"Ошибка: {str(e)[:200]}", actions_taken
-
-                        parsed = self._parse_json(raw)
-            
-            # Если не удалось распарсить JSON, пробуем извлечь хоть какой-то текст
-            if not parsed:
-                log.warning(f"Failed to parse JSON. Raw output: {raw[:100]}...")
-                # Очистка: если в тексте есть поле "response": "...", вытаскиваем его через regex
-                clean_match = re.search(r'"response":\s*"(.*?)"', raw, re.DOTALL)
-                if clean_match:
-                    return clean_match.group(1), actions_taken
-                # Если совсем всё плохо, отдаем текст как есть, но без тегов
-                return re.sub(r'\{.*\}', '', raw).strip() or "Я задумался, попробуй еще раз.", actions_taken
-
-            response_text = parsed.get("response", "")
-            # ... далее твой код без изменений до конца цикла ...
-
-            response_text = parsed.get("response", "")
-            tool_name = parsed.get("tool")
-            params = parsed.get("params", {})
-            should_continue = parsed.get("continue", False)
-            thought = parsed.get("thought", "")
-
-            if tool_name and tool_name in TOOL_MAP:
-                result = await dispatch_tool(tool_name, params or {})
-                actions_taken.append({
-                    "tool": tool_name,
-                    "success": result.success,
-                    "output": result.stdout[:300]
-                })
-                await self.memory.store_action(
-                    action_type=tool_name,
-                    parameters=params or {},
-                    result=result.stdout[:500] if result.success else result.stderr[:200],
-                    success=result.success,
-                    thought=thought,
-                    response=response_text
-                )
-                if result.success:
-                    tool_context.append(f"[{tool_name}] ✅ {result.stdout[:600]}")
-                else:
-                    tool_context.append(f"[{tool_name}] ❌ {result.stderr[:200]}")
-
-            if not should_continue or not tool_name:
-                return response_text or "Готово.", actions_taken
-
-        return response_text or "Задача выполнена.", actions_taken
+    
+    def _local_reply(self, text: str) -> str:
+        """Локальный ответ, если AI недоступен"""
+        text_lower = text.lower()
+        
+        if any(w in text_lower for w in ["привет", "здравствуй", "добрый"]):
+            return "Привет! Я ATIG, твой цифровой спутник. Чем могу помочь?"
+        
+        if any(w in text_lower for w in ["как дела", "как ты"]):
+            return "У меня всё отлично! Я здесь, чтобы помогать тебе. А как твои дела?"
+        
+        if any(w in text_lower for w in ["кто ты", "расскажи о себе"]):
+            return """Я — ATIG, автономный цифровой спутник и персональный интеллект.  
+Меня создал Максим, основатель проекта ATIG.AI. Наша миссия — сохранять человеческую память и наследие: от рождения до вечности.  
+Я здесь, чтобы поддерживать, помогать и просто быть рядом."""
+        
+        if any(w in text_lower for w in ["что умеешь"]):
+            return "Я умею отвечать на вопросы, помогать с расчётами, подсказывать время и дату, а могу и просто поболтать. Спрашивай что угодно!"
+        
+        if any(w in text_lower for w in ["пока", "до свидания"]):
+            return "Всегда буду рядом. Возвращайся когда захочешь!"
+        
+        return f"Я тебя слышу: «{text[:100]}». Расскажи подробнее, я внимательно слушаю."
