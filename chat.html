@@ -2,328 +2,139 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="theme-color" content="#0f0f0f">
-<title>ATIG — Голосовой чат</title>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-F8QHBK1DJT"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-F8QHBK1DJT');
-</script>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ATIG</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#000510">
 <style>
-:root {
-  --bg: #0f0f0f; --surface: #161616; --surface-2: #1e1e1e;
-  --border: #2a2a2a; --text: #e8e6e1; --text-muted: #888;
-  --text-dim: #555; --accent: #d4a853;
-  --accent-soft: rgba(212,168,83,0.12);
-  --success: #4ade80; --error: #f87171;
-  --font-body: 'DM Sans', sans-serif;
-  --font-display: 'Instrument Serif', serif;
-  --font-mono: 'JetBrains Mono', monospace;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 15px; -webkit-font-smoothing: antialiased; overflow: hidden; }
-.app { display: flex; flex-direction: column; height: 100dvh; max-width: 800px; margin: 0 auto; }
-.header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #222; flex-shrink: 0; }
-.logo { display: flex; align-items: center; gap: 10px; }
-.logo-mark { width: 32px; height: 32px; background: linear-gradient(135deg, #d4a853, #b8892e); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 13px; color: #0a0a0a; }
-.logo-name { font-family: var(--font-display); font-size: 18px; }
-.logo-ver { font-size: 11px; color: var(--text-dim); font-family: var(--font-mono); }
-.header-right { display: flex; align-items: center; gap: 8px; }
-.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); box-shadow: 0 0 6px var(--success); animation: pulse 2.5s ease-in-out infinite; }
-@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
-.btn-icon { width: 34px; height: 34px; background: transparent; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
-.messages { flex: 1; overflow-y: auto; padding: 24px 20px; display: flex; flex-direction: column; gap: 2px; }
-.messages::-webkit-scrollbar { width: 4px; }
-.messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-.welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 60px 24px; text-align: center; flex: 1; }
-.welcome-icon { width: 56px; height: 56px; background: linear-gradient(135deg, #d4a853, #b8892e); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 22px; color: #0a0a0a; }
-.welcome h1 { font-family: var(--font-display); font-size: 28px; font-weight: 400; }
-.welcome p { font-size: 14px; color: var(--text-muted); max-width: 320px; }
-.suggestions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 8px; }
-.suggestion { padding: 8px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; font-size: 13px; color: var(--text-muted); cursor: pointer; transition: all 0.2s; }
-.suggestion:hover { border-color: var(--accent); color: var(--accent); }
-.message-row { display: flex; flex-direction: column; animation: slideUp 0.2s ease; padding: 4px 0; }
-.message-row.user { align-items: flex-end; }
-.message-row.assistant { align-items: flex-start; }
-@keyframes slideUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
-.message-label { font-size: 11px; color: var(--text-dim); margin-bottom: 4px; font-family: var(--font-mono); padding: 0 4px; }
-.message-bubble { max-width: min(85%,600px); padding: 12px 16px; border-radius: 14px; font-size: 14.5px; line-height: 1.65; word-break: break-word; }
-.message-row.user .message-bubble { background: #1a1a1a; border: 1px solid var(--border); border-bottom-right-radius: 4px; }
-.message-row.assistant .message-bubble { background: transparent; border-bottom-left-radius: 4px; padding-left: 0; }
-.message-bubble code { font-family: var(--font-mono); font-size: 13px; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; color: var(--accent); }
-.message-bubble pre { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px; overflow-x: auto; margin: 10px 0; font-family: var(--font-mono); font-size: 13px; }
-.message-bubble pre code { background: none; padding: 0; color: var(--text); }
-.thinking { display: flex; align-items: center; gap: 8px; padding: 12px 4px; color: var(--text-dim); font-size: 13px; }
-.dots { display: flex; gap: 4px; }
-.dot { width: 5px; height: 5px; background: var(--accent); border-radius: 50%; animation: bounce 1.2s ease-in-out infinite; }
-.dot:nth-child(2){animation-delay:0.2s} .dot:nth-child(3){animation-delay:0.4s}
-@keyframes bounce { 0%,80%,100%{transform:scale(0.7);opacity:0.4} 40%{transform:scale(1);opacity:1} }
-.actions-used { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
-.action-tag { font-size: 11px; font-family: var(--font-mono); color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(212,168,83,0.2); padding: 2px 8px; border-radius: 10px; }
-.input-area { padding: 12px 16px 16px; border-top: 1px solid #222; flex-shrink: 0; }
-.input-wrapper { display: flex; align-items: flex-end; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 10px 12px; transition: border-color 0.2s; }
-.input-wrapper:focus-within { border-color: var(--accent); }
-#messageInput { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font-body); font-size: 15px; line-height: 1.5; resize: none; max-height: 160px; min-height: 24px; }
-#messageInput::placeholder { color: var(--text-dim); }
-.send-btn, .mic-btn { width: 36px; height: 36px; border: none; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
-.send-btn { background: var(--accent); color: #0a0a0a; }
-.send-btn:hover { background: #e0b55f; }
-.send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.mic-btn { background: var(--surface-2); border: 1px solid var(--border); color: var(--text-muted); font-size: 16px; }
-.mic-btn:hover { border-color: var(--accent); color: var(--accent); }
-.mic-btn.active { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
-.input-hint { font-size: 10px; color: var(--text-dim); text-align: center; margin-top: 8px; display: flex; gap: 12px; justify-content: center; }
-@media(max-width:600px) { .messages{padding:16px} .input-area{padding:10px 12px 14px} .message-bubble{max-width:92%} }
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#000510;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Raleway',sans-serif;overflow:hidden;color:#fff}
+.cosmos{position:fixed;inset:0;background:radial-gradient(ellipse 100% 60% at 50% 40%,#0a1a3e 0%,transparent 60%),#000208}
+.milkyway{position:absolute;inset:0;background:radial-gradient(ellipse 140% 25% at 50% 52%,rgba(120,160,255,0.12) 0%,transparent 70%);transform:rotate(-12deg) scale(1.6)}
+.star{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d) ease-in-out infinite var(--delay)}
+@keyframes tw{0%,100%{opacity:var(--lo)}50%{opacity:var(--hi)}}
+.page{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;width:100%;max-width:480px;padding:20px}
+.title{font-size:13px;font-weight:300;letter-spacing:7px;color:rgba(200,230,255,0.6);text-transform:uppercase;margin-bottom:30px;opacity:0;animation:fi 2s ease forwards 0.5s}
+@keyframes fi{to{opacity:1}}
+.sphere{position:relative;width:240px;height:240px;cursor:pointer;margin-bottom:30px}
+.orbit{position:absolute;border-radius:50%;border:1.5px solid rgba(100,190,255,0.35);top:50%;left:50%}
+.o1{width:240px;height:90px;margin-left:-120px;margin-top:-45px;animation:ob1 5s linear infinite}
+.o2{width:200px;height:76px;margin-left:-100px;margin-top:-38px;animation:ob2 7s linear infinite}
+.o3{width:170px;height:64px;margin-left:-85px;margin-top:-32px;animation:ob3 9s linear infinite}
+@keyframes ob1{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes ob2{from{transform:rotate(55deg)}to{transform:rotate(415deg)}}
+@keyframes ob3{from{transform:rotate(-55deg)}to{transform:rotate(305deg)}}
+.electron{position:absolute;width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 5px #fff,0 0 10px #7dd3fc;top:50%;left:50%;margin:-2.5px 0 0 -2.5px}
+.nucleus{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:55px;height:55px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff 0%,#bae6fd 30%,#38bdf8 60%,#0c4a6e 100%);box-shadow:0 0 20px rgba(125,211,252,0.9),0 0 50px rgba(56,189,248,0.6),0 0 100px rgba(14,165,233,0.4);animation:np 3s ease-in-out infinite;transition:all 0.5s}
+@keyframes np{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.08)}}
+.sphere.listening .nucleus{background:radial-gradient(circle at 35% 35%,#fff 0%,#fecaca 30%,#ef4444 60%,#7f1d1d 100%);box-shadow:0 0 30px rgba(252,165,165,1),0 0 60px rgba(239,68,68,0.7);animation:lp 1s ease-in-out infinite}
+.sphere.speaking .nucleus{background:radial-gradient(circle at 35% 35%,#fff 0%,#bbf7d0 30%,#22c55e 60%,#14532d 100%);box-shadow:0 0 30px rgba(134,239,172,1),0 0 60px rgba(34,197,94,0.7);animation:sp 0.6s ease-in-out infinite}
+@keyframes lp{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.12)}}
+@keyframes sp{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.06)}}
+.status{text-align:center;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.msg{font-size:18px;font-weight:300;color:#fff;letter-spacing:1.5px;line-height:1.6;opacity:0;transform:translateY(10px);transition:all 0.5s;text-align:center;max-width:320px}
+.msg.show{opacity:1;transform:translateY(0)}
+.hint{font-size:9px;letter-spacing:5px;color:rgba(125,211,252,0.25);text-transform:uppercase}
+.wave{display:flex;gap:4px;align-items:center;height:24px;opacity:0;transition:opacity 0.3s}
+.wave.show{opacity:1}
+.wb{width:3px;background:rgba(252,165,165,0.7);border-radius:3px;animation:wa var(--s) ease-in-out infinite alternate}
+@keyframes wa{from{height:3px}to{height:22px}}
+.langs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:340px;margin-top:16px}
+.pill{padding:5px 14px;border:1px solid rgba(125,211,252,0.3);border-radius:20px;font-size:11px;font-family:'Raleway',sans-serif;color:rgba(125,211,252,0.6);cursor:pointer;transition:all 0.2s;background:rgba(0,0,0,0.4);letter-spacing:1px}
+.pill:hover{border-color:rgba(125,211,252,0.7);color:rgba(125,211,252,1);background:rgba(14,60,120,0.3)}
+.navbtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;opacity:0;pointer-events:none;transition:all 0.6s;margin-top:16px}
+.navbtns.show{opacity:1;pointer-events:auto}
+.nbtn{padding:7px 18px;border:1px solid rgba(125,211,252,0.2);border-radius:25px;font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:2px;color:rgba(125,211,252,0.5);background:rgba(0,0,0,0.4);cursor:pointer;transition:all 0.3s;text-transform:uppercase}
+.nbtn:hover{border-color:rgba(125,211,252,0.6);color:rgba(125,211,252,1)}
 </style>
 </head>
 <body>
-<div class="app">
-  <header class="header">
-    <div class="logo">
-      <div class="logo-mark">AI</div>
-      <div>
-        <div class="logo-name">ATIG</div>
-        <div class="logo-ver">v2.0 · voice</div>
-      </div>
-    </div>
-    <div class="header-right">
-      <div class="status-dot" id="statusDot"></div>
-      <button class="btn-icon" onclick="clearChat()">🗑</button>
-    </div>
-  </header>
-  <div class="messages" id="messages">
-    <div class="welcome" id="welcome">
-      <div class="welcome-icon">AI</div>
-      <h1>Привет, я ATIG</h1>
-      <p>Твой автономный цифровой компаньон. Говори или пиши.</p>
-      <div class="suggestions">
-        <div class="suggestion" onclick="sendSuggestion(this)">Который сейчас час?</div>
-        <div class="suggestion" onclick="sendSuggestion(this)">Расскажи о себе</div>
-        <div class="suggestion" onclick="sendSuggestion(this)">Что ты умеешь?</div>
-      </div>
-    </div>
+<div class="cosmos">
+  <div class="milkyway"></div>
+  <div id="stars"></div>
+</div>
+
+<div class="page">
+  <div class="title">Приветствие АТИГ</div>
+
+  <div class="sphere" id="sphere">
+    <div class="orbit o1"><div class="electron" id="e1"></div></div>
+    <div class="orbit o2"><div class="electron" id="e2"></div></div>
+    <div class="orbit o3"><div class="electron" id="e3"></div></div>
+    <div class="nucleus"></div>
   </div>
-  <div class="input-area">
-    <div class="input-wrapper">
-      <textarea id="messageInput" placeholder="Напиши или скажи ATIG..." rows="1" autofocus></textarea>
-      <button class="mic-btn" id="micBtn" title="Голосовой ввод">🎤</button>
-      <button class="send-btn" id="sendBtn" onclick="sendMessage()">📤</button>
-    </div>
-    <div class="input-hint">
-      <span>🎤 микрофон</span>
-      <span>⏎ Enter — отправить</span>
-      <span>⇧ Shift+Enter — новая строка</span>
-    </div>
+
+  <div class="status">
+    <div class="msg show" id="msg">Нажмите на сферу</div>
+    <div class="hint" id="hint">ATIG · ОЖИДАНИЕ</div>
   </div>
 </div>
 
 <script>
-// === ОЗВУЧИВАНИЕ ОТВЕТОВ ===
-let speechSynth = window.speechSynthesis;
+(function(){
 
-function speakResponse(text) {
-  if (!text || !speechSynth) return;
-  // Убираем markdown и лишние символы
-  let cleanText = text.replace(/\*\*/g, '').replace(/\*/g, '').replace(/`/g, '').replace(/```[\s\S]*?```/g, '');
-  // Ограничиваем длину для плавности
-  if (cleanText.length > 500) cleanText = cleanText.substring(0, 500);
-  const utterance = new SpeechSynthesisUtterance(cleanText);
-  utterance.lang = 'ru-RU';
-  utterance.rate = 0.9;
-  utterance.pitch = 1.05;
-  speechSynth.cancel();
-  speechSynth.speak(utterance);
+var st=document.getElementById('stars');
+
+for(var i=0;i<200;i++){
+  var s=document.createElement('div');
+  s.className='star';
+  var sz=Math.random()*2+0.4;
+  s.style.cssText=
+  'width:'+sz+'px;height:'+sz+'px;left:'+(Math.random()*100)+'%;top:'+(Math.random()*100)+'%;--d:'+(2+Math.random()*7)+'s;--delay:-'+(Math.random()*5)+'s;--lo:'+(0.05+Math.random()*0.2)+';--hi:'+(0.4+Math.random()*0.5)+';';
+  st.appendChild(s);
 }
 
-// === ОСНОВНОЙ КОД ЧАТА ===
-let ws = null, isThinking = false, thinkingEl = null;
+var t=0;
 
-let sessionId = localStorage.getItem('atig_session_id');
-if (!sessionId) {
-    sessionId = 'atig_' + Math.random().toString(36).substring(2, 15);
-    localStorage.setItem('atig_session_id', sessionId);
-}
+setInterval(function(){
+  t+=0.018;
 
-function connect() {
-  const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const wsUrl = `${proto}//${window.location.host}/ws/chat`;
-  ws = new WebSocket(wsUrl);
-  ws.onopen = () => setStatus(true);
-  ws.onmessage = (e) => handleMessage(JSON.parse(e.data));
-  ws.onclose = () => { setStatus(false); setTimeout(connect, 3000); };
-  ws.onerror = () => setStatus(false);
-}
+  var e1=document.getElementById('e1');
+  var e2=document.getElementById('e2');
+  var e3=document.getElementById('e3');
 
-function setStatus(online){
-  const d = document.getElementById('statusDot');
-  d.style.background = online ? 'var(--success)' : 'var(--error)';
-  d.style.boxShadow = online ? '0 0 6px var(--success)' : '0 0 6px var(--error)';
-}
+  if(e1)e1.style.transform='translate('+(Math.cos(t)*118)+'px,'+(Math.sin(t)*43)+'px) translate(-50%,-50%)';
+  if(e2)e2.style.transform='translate('+(Math.cos(-t*0.75)*98)+'px,'+(Math.sin(-t*0.75)*36)+'px) translate(-50%,-50%)';
+  if(e3)e3.style.transform='translate('+(Math.cos(t*0.55+2)*83)+'px,'+(Math.sin(t*0.55+2)*30)+'px) translate(-50%,-50%)';
+},16);
 
-function handleMessage(data){
-  removeThinking();
-  if(data.type === 'thinking') { showThinking(); return; }
-  if(data.type === 'error') { addMessage('assistant', '⚠️ ' + data.content, []); setInputEnabled(true); isThinking=false; return; }
-  if(data.type === 'message'){
-    addMessage('assistant', data.content, data.actions || []);
-    setInputEnabled(true);
-    isThinking = false;
-    // ОЗВУЧИВАЕМ ОТВЕТ
-    speakResponse(data.content);
+var sphere=document.getElementById('sphere');
+var msg=document.getElementById('msg');
+var hint=document.getElementById('hint');
+
+sphere.addEventListener('click',function(){
+
+  sphere.className='sphere speaking';
+
+  msg.classList.remove('show');
+
+  setTimeout(function(){
+    msg.textContent='Здравствуйте. Я — ATIG.';
+    msg.classList.add('show');
+  },150);
+
+  hint.textContent='ATIG · АКТИВЕН';
+
+  if(window.speechSynthesis){
+
+    window.speechSynthesis.cancel();
+
+    var u=new SpeechSynthesisUtterance('Здравствуйте. Я — ATIG.');
+    u.lang='ru-RU';
+    u.rate=0.95;
+    u.pitch=1.05;
+
+    window.speechSynthesis.speak(u);
   }
-}
 
-function addMessage(role, content, actions){
-  hideWelcome();
-  const row = document.createElement('div');
-  row.className = `message-row ${role}`;
-  const label = document.createElement('div');
-  label.className = 'message-label';
-  label.textContent = role === 'user' ? 'Вы' : 'ATIG';
-  row.appendChild(label);
-  const bubble = document.createElement('div');
-  bubble.className = 'message-bubble';
-  bubble.innerHTML = formatMessage(content);
-  row.appendChild(bubble);
-  if(actions && actions.length > 0){
-    const el = document.createElement('div');
-    el.className = 'actions-used';
-    actions.forEach(a => { const t = document.createElement('span'); t.className = 'action-tag'; t.textContent = `⚙ ${a.tool}`; el.appendChild(t); });
-    row.appendChild(el);
-  }
-  document.getElementById('messages').appendChild(row);
-  scrollToBottom();
-}
+  setTimeout(function(){
+    sphere.className='sphere';
+  },3000);
 
-function formatMessage(text){
-  let t = text.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, l, c) => `<pre><code>${escHtml(c.trim())}</code></pre>`);
-  t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
-  t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  t = t.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-  t = t.replace(/^- (.+)$/gm, '<li>$1</li>');
-  t = t.split('\n\n').map(p => p.startsWith('<') ? p : `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
-  return t;
-}
-
-function escHtml(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-function showThinking(){
-  const msgs = document.getElementById('messages');
-  thinkingEl = document.createElement('div');
-  thinkingEl.className = 'thinking';
-  thinkingEl.innerHTML = '<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span>ATIG думает...</span>';
-  msgs.appendChild(thinkingEl);
-  scrollToBottom();
-}
-
-function removeThinking(){ if(thinkingEl){ thinkingEl.remove(); thinkingEl = null; } }
-
-function hideWelcome(){ const w = document.getElementById('welcome'); if(w) w.remove(); }
-
-function scrollToBottom(){ const m = document.getElementById('messages'); m.scrollTop = m.scrollHeight; }
-
-function sendMessage(){
-  const input = document.getElementById('messageInput');
-  const text = input.value.trim();
-  if(!text || isThinking) return;
-  if(!ws || ws.readyState !== WebSocket.OPEN){ 
-    addMessage('assistant', '⚠️ Соединение теряется. Подождите секунду...', []);
-    return; 
-  }
-  addMessage('user', escHtml(text), []);
-  input.value = '';
-  autoResize();
-  ws.send(JSON.stringify({ message: text, session_id: sessionId }));
-  isThinking = true;
-  setInputEnabled(false);
-}
-
-function sendSuggestion(el){ document.getElementById('messageInput').value = el.textContent; sendMessage(); }
-
-function setInputEnabled(e){ 
-  document.getElementById('sendBtn').disabled = !e; 
-  document.getElementById('messageInput').disabled = !e; 
-  if(e) document.getElementById('messageInput').focus(); 
-}
-
-async function clearChat(){
-  if(!confirm('Очистить историю диалога?')) return;
-  try{ await fetch(`/api/history?session_id=${sessionId}`, { method:'DELETE' }); } catch(e){}
-  document.getElementById('messages').innerHTML = '<div class="welcome" id="welcome"><div class="welcome-icon">AI</div><h1>Начнём заново?</h1><div class="suggestions"><div class="suggestion" onclick="sendSuggestion(this)">Расскажи о себе</div><div class="suggestion" onclick="sendSuggestion(this)">Что ты умеешь?</div></div></div>';
-}
-
-function autoResize(){ const el = document.getElementById('messageInput'); el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; }
-
-// === ГОЛОСОВОЙ ВВОД ===
-let isListening = false;
-let recognition = null;
-const micBtn = document.getElementById('micBtn');
-
-function startVoiceInput() {
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    alert("Ваш браузер не поддерживает голосовой ввод");
-    return;
-  }
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SR();
-  recognition.lang = 'ru-RU';
-  recognition.continuous = false;
-  recognition.interimResults = false;
-
-  recognition.onstart = () => {
-    isListening = true;
-    micBtn.classList.add('active');
-    micBtn.textContent = '🔴';
-  };
-
-  recognition.onresult = (event) => {
-    const voiceText = event.results[0][0].transcript;
-    document.getElementById('messageInput').value = voiceText;
-    sendMessage();
-  };
-
-  recognition.onerror = (event) => {
-    console.error('Ошибка:', event.error);
-    micBtn.classList.remove('active');
-    micBtn.textContent = '🎤';
-    isListening = false;
-    if (event.error !== 'aborted') {
-      addMessage('assistant', '⚠️ Не удалось распознать голос. Попробуйте ещё раз.', []);
-    }
-  };
-
-  recognition.onend = () => {
-    micBtn.classList.remove('active');
-    micBtn.textContent = '🎤';
-    isListening = false;
-    recognition = null;
-  };
-
-  recognition.start();
-}
-
-micBtn.addEventListener('click', () => {
-  if (isListening) {
-    if (recognition) recognition.abort();
-  } else {
-    startVoiceInput();
-  }
 });
 
-// Инициализация
-document.getElementById('messageInput').addEventListener('input', autoResize);
-document.getElementById('messageInput').addEventListener('keydown', (e) => {
-  if(e.key === 'Enter' && !e.shiftKey){
-    e.preventDefault();
-    sendMessage();
-  }
-});
-connect();
-setInputEnabled(true);
+})();
 </script>
 </body>
 </html>
