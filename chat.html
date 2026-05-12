@@ -57,10 +57,6 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .message-bubble code { font-family: var(--font-mono); font-size: 13px; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; color: var(--accent); }
 .message-bubble pre { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px; overflow-x: auto; margin: 10px 0; font-family: var(--font-mono); font-size: 13px; }
 .message-bubble pre code { background: none; padding: 0; color: var(--text); }
-.message-bubble p { margin: 6px 0; }
-.message-bubble p:first-child { margin-top: 0; }
-.message-bubble p:last-child { margin-bottom: 0; }
-.message-bubble ul, .message-bubble ol { padding-left: 20px; margin: 6px 0; }
 .thinking { display: flex; align-items: center; gap: 8px; padding: 12px 4px; color: var(--text-dim); font-size: 13px; }
 .dots { display: flex; gap: 4px; }
 .dot { width: 5px; height: 5px; background: var(--accent); border-radius: 50%; animation: bounce 1.2s ease-in-out infinite; }
@@ -69,16 +65,18 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .actions-used { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
 .action-tag { font-size: 11px; font-family: var(--font-mono); color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(212,168,83,0.2); padding: 2px 8px; border-radius: 10px; }
 .input-area { padding: 12px 16px 16px; border-top: 1px solid #222; flex-shrink: 0; }
-.input-wrapper { display: flex; align-items: flex-end; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 10px 12px; transition: border-color 0.2s; }
+.input-wrapper { display: flex; align-items: flex-end; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 10px 12px; transition: border-color 0.2s; }
 .input-wrapper:focus-within { border-color: var(--accent); }
 #messageInput { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font-body); font-size: 15px; line-height: 1.5; resize: none; max-height: 160px; min-height: 24px; }
 #messageInput::placeholder { color: var(--text-dim); }
-.send-btn, .mic-btn { width: 34px; height: 34px; background: var(--accent); border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #0a0a0a; transition: all 0.15s; }
-.send-btn:hover, .mic-btn:hover { background: #e0b55f; }
-.send-btn:disabled, .mic-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.mic-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); }
+.send-btn, .mic-btn { width: 36px; height: 36px; border: none; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+.send-btn { background: var(--accent); color: #0a0a0a; }
+.send-btn:hover { background: #e0b55f; }
+.send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.mic-btn { background: var(--surface-2); border: 1px solid var(--border); color: var(--text-muted); font-size: 16px; }
+.mic-btn:hover { border-color: var(--accent); color: var(--accent); }
 .mic-btn.active { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
-.input-hint { font-size: 11px; color: var(--text-dim); text-align: center; margin-top: 8px; }
+.input-hint { font-size: 10px; color: var(--text-dim); text-align: center; margin-top: 8px; display: flex; gap: 12px; justify-content: center; }
 @media(max-width:600px) { .messages{padding:16px} .input-area{padding:10px 12px 14px} .message-bubble{max-width:92%} }
 </style>
 </head>
@@ -105,8 +103,6 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       <div class="suggestions">
         <div class="suggestion" onclick="sendSuggestion(this)">Который сейчас час?</div>
         <div class="suggestion" onclick="sendSuggestion(this)">Расскажи о себе</div>
-        <div class="suggestion" onclick="sendSuggestion(this)">Найди новости об ИИ</div>
-        <div class="suggestion" onclick="sendSuggestion(this)">Посчитай 2^32</div>
         <div class="suggestion" onclick="sendSuggestion(this)">Что ты умеешь?</div>
       </div>
     </div>
@@ -115,36 +111,35 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
     <div class="input-wrapper">
       <textarea id="messageInput" placeholder="Напиши или скажи ATIG..." rows="1" autofocus></textarea>
       <button class="mic-btn" id="micBtn" title="Голосовой ввод">🎤</button>
-      <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-      </button>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">📤</button>
     </div>
-    <div class="input-hint">🎤 голос · Enter отправить · Shift+Enter новая строка</div>
+    <div class="input-hint">
+      <span>🎤 микрофон</span>
+      <span>⏎ Enter — отправить</span>
+      <span>⇧ Shift+Enter — новая строка</span>
+    </div>
   </div>
 </div>
 
 <script>
-// === ГОЛОСОВЫЕ ФУНКЦИИ ===
-let mediaRecorder = null;
-let audioChunks = [];
-let isRecording = false;
-let recognition = null;
+// === ОЗВУЧИВАНИЕ ОТВЕТОВ ===
 let speechSynth = window.speechSynthesis;
 
-// Функция озвучивания ответа ATIG
 function speakResponse(text) {
   if (!text || !speechSynth) return;
-  // Убираем markdown и лишние символы для чистого звука
+  // Убираем markdown и лишние символы
   let cleanText = text.replace(/\*\*/g, '').replace(/\*/g, '').replace(/`/g, '').replace(/```[\s\S]*?```/g, '');
+  // Ограничиваем длину для плавности
+  if (cleanText.length > 500) cleanText = cleanText.substring(0, 500);
   const utterance = new SpeechSynthesisUtterance(cleanText);
   utterance.lang = 'ru-RU';
-  utterance.rate = 0.92;
+  utterance.rate = 0.9;
   utterance.pitch = 1.05;
   speechSynth.cancel();
   speechSynth.speak(utterance);
 }
 
-// === СУЩЕСТВУЮЩИЙ КОД WS И ЧАТА (с небольшими изменениями) ===
+// === ОСНОВНОЙ КОД ЧАТА ===
 let ws = null, isThinking = false, thinkingEl = null;
 
 let sessionId = localStorage.getItem('atig_session_id');
@@ -162,23 +157,26 @@ function connect() {
   ws.onclose = () => { setStatus(false); setTimeout(connect, 3000); };
   ws.onerror = () => setStatus(false);
 }
+
 function setStatus(online){
   const d = document.getElementById('statusDot');
   d.style.background = online ? 'var(--success)' : 'var(--error)';
   d.style.boxShadow = online ? '0 0 6px var(--success)' : '0 0 6px var(--error)';
 }
+
 function handleMessage(data){
   removeThinking();
   if(data.type === 'thinking') { showThinking(); return; }
-  if(data.type === 'error') { addMessage('assistant', '⚠️ ' + data.content, []); return; }
+  if(data.type === 'error') { addMessage('assistant', '⚠️ ' + data.content, []); setInputEnabled(true); isThinking=false; return; }
   if(data.type === 'message'){
     addMessage('assistant', data.content, data.actions || []);
     setInputEnabled(true);
     isThinking = false;
-    // Озвучиваем ответ
+    // ОЗВУЧИВАЕМ ОТВЕТ
     speakResponse(data.content);
   }
 }
+
 function addMessage(role, content, actions){
   hideWelcome();
   const row = document.createElement('div');
@@ -200,16 +198,19 @@ function addMessage(role, content, actions){
   document.getElementById('messages').appendChild(row);
   scrollToBottom();
 }
+
 function formatMessage(text){
-  text = text.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, l, c) => `<pre><code>${escHtml(c.trim())}</code></pre>`);
-  text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
-  text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-  text = text.replace(/^- (.+)$/gm, '<li>$1</li>');
-  text = text.split('\n\n').map(p => p.startsWith('<') ? p : `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
-  return text;
+  let t = text.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, l, c) => `<pre><code>${escHtml(c.trim())}</code></pre>`);
+  t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
+  t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  t = t.replace(/^- (.+)$/gm, '<li>$1</li>');
+  t = t.split('\n\n').map(p => p.startsWith('<') ? p : `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+  return t;
 }
+
 function escHtml(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
 function showThinking(){
   const msgs = document.getElementById('messages');
   thinkingEl = document.createElement('div');
@@ -218,16 +219,21 @@ function showThinking(){
   msgs.appendChild(thinkingEl);
   scrollToBottom();
 }
+
 function removeThinking(){ if(thinkingEl){ thinkingEl.remove(); thinkingEl = null; } }
+
 function hideWelcome(){ const w = document.getElementById('welcome'); if(w) w.remove(); }
+
 function scrollToBottom(){ const m = document.getElementById('messages'); m.scrollTop = m.scrollHeight; }
 
-// Отправка текстового сообщения
 function sendMessage(){
   const input = document.getElementById('messageInput');
   const text = input.value.trim();
   if(!text || isThinking) return;
-  if(!ws || ws.readyState !== WebSocket.OPEN){ return; }
+  if(!ws || ws.readyState !== WebSocket.OPEN){ 
+    addMessage('assistant', '⚠️ Соединение теряется. Подождите секунду...', []);
+    return; 
+  }
   addMessage('user', escHtml(text), []);
   input.value = '';
   autoResize();
@@ -235,17 +241,26 @@ function sendMessage(){
   isThinking = true;
   setInputEnabled(false);
 }
+
 function sendSuggestion(el){ document.getElementById('messageInput').value = el.textContent; sendMessage(); }
-function setInputEnabled(e){ document.getElementById('sendBtn').disabled = !e; document.getElementById('messageInput').disabled = !e; if(e) document.getElementById('messageInput').focus(); }
-async function clearChat(){
-  if(!confirm('Очистить историю?')) return;
-  try{ await fetch(`/api/history?session_id=${sessionId}`, { method:'DELETE' }); } catch(e){}
-  document.getElementById('messages').innerHTML = '<div class="welcome" id="welcome"><div class="welcome-icon">AI</div><h1>Начнём заново?</h1></div>';
+
+function setInputEnabled(e){ 
+  document.getElementById('sendBtn').disabled = !e; 
+  document.getElementById('messageInput').disabled = !e; 
+  if(e) document.getElementById('messageInput').focus(); 
 }
+
+async function clearChat(){
+  if(!confirm('Очистить историю диалога?')) return;
+  try{ await fetch(`/api/history?session_id=${sessionId}`, { method:'DELETE' }); } catch(e){}
+  document.getElementById('messages').innerHTML = '<div class="welcome" id="welcome"><div class="welcome-icon">AI</div><h1>Начнём заново?</h1><div class="suggestions"><div class="suggestion" onclick="sendSuggestion(this)">Расскажи о себе</div><div class="suggestion" onclick="sendSuggestion(this)">Что ты умеешь?</div></div></div>';
+}
+
 function autoResize(){ const el = document.getElementById('messageInput'); el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; }
 
-// === ГОЛОСОВОЙ ВВОД (SpeechRecognition) ===
+// === ГОЛОСОВОЙ ВВОД ===
 let isListening = false;
+let recognition = null;
 const micBtn = document.getElementById('micBtn');
 
 function startVoiceInput() {
@@ -272,10 +287,13 @@ function startVoiceInput() {
   };
 
   recognition.onerror = (event) => {
-    console.error('Ошибка распознавания:', event.error);
+    console.error('Ошибка:', event.error);
     micBtn.classList.remove('active');
     micBtn.textContent = '🎤';
     isListening = false;
+    if (event.error !== 'aborted') {
+      addMessage('assistant', '⚠️ Не удалось распознать голос. Попробуйте ещё раз.', []);
+    }
   };
 
   recognition.onend = () => {
@@ -290,7 +308,7 @@ function startVoiceInput() {
 
 micBtn.addEventListener('click', () => {
   if (isListening) {
-    if (recognition) recognition.stop();
+    if (recognition) recognition.abort();
   } else {
     startVoiceInput();
   }
