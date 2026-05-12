@@ -23,10 +23,9 @@ brain = Brain(memory)
 active_connections = []
 
 PAGES = {
-    "/": "index.html",
-    "/chat": "chat.html",
+    "/": "chat.html",
+    "/sphere": "index.html",
 }
-
 
 def make_handler(path):
     async def handler():
