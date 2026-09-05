@@ -1,319 +1,1007 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>ATIG</title>
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#000510">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>ATIG — Autonomous Trusted Intelligence Guardian</title>
+<meta name="description" content="ATIG — sovereign AI ecosystem with persistent memory and privacy-by-design architecture.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400&display=swap');
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:#000510;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Raleway',sans-serif;overflow:hidden;color:#fff}
-.cosmos{position:fixed;inset:0;background:radial-gradient(ellipse 100% 60% at 50% 40%,#0a1a3e 0%,transparent 60%),#000208}
-.milkyway{position:absolute;inset:0;background:radial-gradient(ellipse 140% 25% at 50% 52%,rgba(120,160,255,0.12) 0%,transparent 70%);transform:rotate(-12deg) scale(1.6)}
-.star{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d) ease-in-out infinite var(--delay)}
-@keyframes tw{0%,100%{opacity:var(--lo)}50%{opacity:var(--hi)}}
-.page{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;width:100%;max-width:480px;padding:20px}
-.title{font-size:13px;font-weight:300;letter-spacing:7px;color:rgba(200,230,255,0.6);text-transform:uppercase;margin-bottom:30px;opacity:0;animation:fi 2s ease forwards 0.5s}
-@keyframes fi{to{opacity:1}}
-.sphere{position:relative;width:240px;height:240px;cursor:pointer;margin-bottom:30px}
-.orbit{position:absolute;border-radius:50%;border:1.5px solid rgba(100,190,255,0.35);top:50%;left:50%}
-.o1{width:240px;height:90px;margin-left:-120px;margin-top:-45px;animation:ob1 5s linear infinite}
-.o2{width:200px;height:76px;margin-left:-100px;margin-top:-38px;animation:ob2 7s linear infinite}
-.o3{width:170px;height:64px;margin-left:-85px;margin-top:-32px;animation:ob3 9s linear infinite}
-@keyframes ob1{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes ob2{from{transform:rotate(55deg)}to{transform:rotate(415deg)}}
-@keyframes ob3{from{transform:rotate(-55deg)}to{transform:rotate(305deg)}}
-.electron{position:absolute;width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 5px #fff,0 0 10px #7dd3fc;top:50%;left:50%;margin:-2.5px 0 0 -2.5px}
-.nucleus{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:55px;height:55px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff 0%,#bae6fd 30%,#38bdf8 60%,#0c4a6e 100%);box-shadow:0 0 20px rgba(125,211,252,0.9),0 0 50px rgba(56,189,248,0.6),0 0 100px rgba(14,165,233,0.4);animation:np 3s ease-in-out infinite;transition:all 0.5s}
-@keyframes np{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.08)}}
-.sphere.listening .nucleus{background:radial-gradient(circle at 35% 35%,#fff 0%,#fecaca 30%,#ef4444 60%,#7f1d1d 100%);box-shadow:0 0 30px rgba(252,165,165,1),0 0 60px rgba(239,68,68,0.7);animation:lp 1s ease-in-out infinite}
-.sphere.speaking .nucleus{background:radial-gradient(circle at 35% 35%,#fff 0%,#bbf7d0 30%,#22c55e 60%,#14532d 100%);box-shadow:0 0 30px rgba(134,239,172,1),0 0 60px rgba(34,197,94,0.7);animation:sp 0.6s ease-in-out infinite}
-@keyframes lp{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.12)}}
-@keyframes sp{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.06)}}
-.status{text-align:center;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
-.msg{font-size:18px;font-weight:300;color:#fff;letter-spacing:1.5px;line-height:1.6;opacity:0;transform:translateY(10px);transition:all 0.5s;text-align:center;max-width:320px}
-.msg.show{opacity:1;transform:translateY(0)}
-.hint{font-size:9px;letter-spacing:5px;color:rgba(125,211,252,0.25);text-transform:uppercase}
-.wave{display:flex;gap:4px;align-items:center;height:24px;opacity:0;transition:opacity 0.3s}
-.wave.show{opacity:1}
-.wb{width:3px;background:rgba(252,165,165,0.7);border-radius:3px;animation:wa var(--s) ease-in-out infinite alternate}
-@keyframes wa{from{height:3px}to{height:22px}}
-.langs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:340px;margin-top:16px}
-.pill{padding:5px 14px;border:1px solid rgba(125,211,252,0.3);border-radius:20px;font-size:11px;font-family:'Raleway',sans-serif;color:rgba(125,211,252,0.6);cursor:pointer;transition:all 0.2s;background:rgba(0,0,0,0.4);letter-spacing:1px}
-.pill:hover{border-color:rgba(125,211,252,0.7);color:rgba(125,211,252,1);background:rgba(14,60,120,0.3)}
-.navbtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;opacity:0;pointer-events:none;transition:all 0.6s;margin-top:16px}
-.navbtns.show{opacity:1;pointer-events:auto}
-.nbtn{padding:7px 18px;border:1px solid rgba(125,211,252,0.2);border-radius:25px;font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:2px;color:rgba(125,211,252,0.5);background:rgba(0,0,0,0.4);cursor:pointer;transition:all 0.3s;text-transform:uppercase}
-.nbtn:hover{border-color:rgba(125,211,252,0.6);color:rgba(125,211,252,1)}
+  :root{
+    --bg: #000510;
+    --bg-2: #050b1c;
+    --panel: rgba(255,255,255,0.05);
+    --panel-border: rgba(255,255,255,0.1);
+    --ice: #dce9f7;
+    --ice-dim: #93a6c4;
+    --cyan: #38bdf8;
+    --blue: #3b82f6;
+    --max: 1180px;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    font-family: 'Raleway', sans-serif;
+    background: var(--bg);
+    color: var(--ice);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  #starfield{
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(59,130,246,0.18), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 90% 110%, rgba(56,189,248,0.12), transparent 60%),
+      var(--bg);
+  }
+
+  main, header, footer{ position: relative; z-index: 1; }
+
+  .wrap{ max-width: var(--max); margin: 0 auto; padding: 0 28px; }
+
+  @media (max-width: 640px){ .wrap{ padding: 0 20px; } }
+
+  a{ color: inherit; text-decoration: none; }
+
+  button{ font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  ::selection{ background: rgba(56,189,248,0.3); }
+
+  /* ---------- Glass helper ---------- */
+  .glass{
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  /* ---------- HEADER ---------- */
+  header{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(0,5,16,0.7);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--panel-border);
+  }
+
+  .header-row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 0;
+  }
+
+  .logo{
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo::before{
+    content: "";
+    display: inline-block;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #bfe8ff, var(--cyan) 55%, var(--blue) 100%);
+    box-shadow: 0 0 14px 2px rgba(56,189,248,0.7);
+  }
+
+  .header-right{
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .lang-switch{
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 999px;
+  }
+
+  .lang-btn{
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--ice-dim);
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+
+  .lang-btn.active{
+    color: #001018;
+    background: linear-gradient(135deg, var(--cyan), var(--blue));
+  }
+
+  .btn-demo{
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #001018;
+    background: linear-gradient(135deg, var(--cyan), var(--blue));
+    box-shadow: 0 0 20px rgba(56,189,248,0.35);
+    white-space: nowrap;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .btn-demo:hover{ transform: translateY(-1px); box-shadow: 0 4px 26px rgba(56,189,248,0.5); }
+
+  @media (max-width: 720px){
+    .header-right{ gap: 10px; }
+    .btn-demo{ padding: 9px 14px; font-size: 12.5px; }
+    .lang-btn{ padding: 5px 9px; font-size: 12px; }
+  }
+
+  @media (max-width: 520px){
+    .header-row{ flex-wrap: wrap; }
+    .logo{ font-size: 19px; }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding: 110px 0 90px;
+    text-align: center;
+  }
+
+  .eyebrow{
+    display: inline-block;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--cyan);
+    margin-bottom: 22px;
+  }
+
+  .hero h1{
+    font-size: clamp(30px, 5.4vw, 54px);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.18;
+    max-width: 20ch;
+    margin: 0 auto;
+  }
+
+  .hero .sub{
+    margin: 26px auto 0;
+    max-width: 62ch;
+    font-size: 17px;
+    font-weight: 300;
+    color: var(--ice-dim);
+    line-height: 1.7;
+  }
+
+  .waitlist{
+    margin: 44px auto 0;
+    max-width: 480px;
+    display: flex;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 999px;
+  }
+
+  .waitlist input{
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-family: inherit;
+    font-size: 14.5px;
+    padding: 10px 16px;
+  }
+
+  .waitlist input::placeholder{ color: var(--ice-dim); }
+
+  .waitlist button{
+    flex-shrink: 0;
+    padding: 11px 20px;
+    border-radius: 999px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #001018;
+    background: linear-gradient(135deg, var(--cyan), var(--blue));
+    white-space: nowrap;
+    transition: transform 0.2s ease;
+  }
+
+  .waitlist button:hover{ transform: translateY(-1px); }
+
+  @media (max-width: 480px){
+    .waitlist{ flex-direction: column; border-radius: 20px; }
+    .waitlist button{ width: 100%; }
+  }
+
+  /* Toast */
+  #toast{
+    position: fixed;
+    left: 50%;
+    bottom: 32px;
+    transform: translateX(-50%) translateY(20px);
+    padding: 14px 24px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  }
+
+  #toast.show{
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ---------- SECTION HEADS ---------- */
+  .section-head{
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 56px;
+  }
+
+  .section-head h2{
+    font-size: clamp(24px, 3.6vw, 34px);
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .section-head p{
+    margin-top: 14px;
+    font-size: 15.5px;
+    color: var(--ice-dim);
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  section{ padding: 90px 0; }
+
+  /* ---------- VOICE DEMO ---------- */
+  #demo{
+    padding-top: 70px;
+  }
+
+  .demo-panel{
+    border-radius: 28px;
+    padding: 56px 28px 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sphere-stage{
+    position: relative;
+    width: 260px;
+    height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 34px;
+  }
+
+  .sphere-core{
+    width: 108px;
+    height: 108px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 34% 30%, #d9f3ff 0%, var(--cyan) 42%, var(--blue) 78%, #0b1840 100%);
+    box-shadow: 0 0 40px 6px rgba(56,189,248,0.55), inset 0 0 30px rgba(255,255,255,0.35);
+    animation: pulse 3.2s ease-in-out infinite;
+    position: relative;
+    z-index: 3;
+  }
+
+  @keyframes pulse{
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.07); }
+  }
+
+  .orbit{
+    position: absolute;
+    border: 1px solid rgba(147, 197, 253, 0.28);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+  }
+
+  .orbit1{ width: 170px; height: 170px; margin: -85px 0 0 -85px; animation: spin 6s linear infinite; }
+  .orbit2{ width: 210px; height: 210px; margin: -105px 0 0 -105px; animation: spin 10s linear infinite reverse; transform: rotateX(58deg); }
+  .orbit3{ width: 250px; height: 250px; margin: -125px 0 0 -125px; animation: spin 14s linear infinite; transform: rotateX(70deg) rotateZ(30deg); }
+
+  @keyframes spin{ from{ transform: rotate(0deg); } to{ transform: rotate(360deg); } }
+  .orbit2{ animation-name: spin2; }
+  .orbit3{ animation-name: spin3; }
+  @keyframes spin2{ from{ transform: rotateX(58deg) rotateZ(0deg); } to{ transform: rotateX(58deg) rotateZ(-360deg); } }
+  @keyframes spin3{ from{ transform: rotateX(70deg) rotateZ(30deg); } to{ transform: rotateX(70deg) rotateZ(390deg); } }
+
+  .electron{
+    position: absolute;
+    width: 8px; height: 8px;
+    top: -4px; left: calc(50% - 4px);
+    border-radius: 50%;
+    background: #bfe8ff;
+    box-shadow: 0 0 10px 3px rgba(191,232,255,0.9);
+  }
+
+  .sphere-stage.state-listening .sphere-core{ animation-duration: 1.1s; box-shadow: 0 0 55px 10px rgba(56,189,248,0.8), inset 0 0 30px rgba(255,255,255,0.45); }
+  .sphere-stage.state-listening .orbit1{ animation-duration: 2.4s; }
+  .sphere-stage.state-listening .orbit2{ animation-duration: 4s; }
+  .sphere-stage.state-listening .orbit3{ animation-duration: 5.6s; }
+
+  .sphere-stage.state-speaking .sphere-core{
+    background: radial-gradient(circle at 34% 30%, #fff 0%, #bfe8ff 30%, var(--cyan) 55%, var(--blue) 85%, #0b1840 100%);
+    animation-duration: 0.7s;
+  }
+
+  .status-label{
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+
+  .transcript{
+    min-height: 24px;
+    font-size: 15px;
+    color: var(--ice-dim);
+    text-align: center;
+    max-width: 480px;
+    margin-bottom: 26px;
+  }
+
+  .wave{
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 30px;
+    margin-bottom: 30px;
+  }
+
+  .wave span{
+    display: block;
+    width: 4px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, var(--cyan), var(--blue));
+    height: 6px;
+    opacity: 0.5;
+    transition: height 0.15s ease, opacity 0.15s ease;
+  }
+
+  .sphere-stage.state-listening ~ .wave span,
+  .demo-panel.is-listening .wave span{ animation: wave-bounce 0.9s ease-in-out infinite; opacity: 1; }
+  .demo-panel.is-speaking .wave span{ animation: wave-bounce 0.5s ease-in-out infinite; opacity: 1; }
+
+  .wave span:nth-child(1){ animation-delay: 0s; }
+  .wave span:nth-child(2){ animation-delay: 0.1s; }
+  .wave span:nth-child(3){ animation-delay: 0.2s; }
+  .wave span:nth-child(4){ animation-delay: 0.3s; }
+  .wave span:nth-child(5){ animation-delay: 0.4s; }
+  .wave span:nth-child(6){ animation-delay: 0.3s; }
+  .wave span:nth-child(7){ animation-delay: 0.2s; }
+  .wave span:nth-child(8){ animation-delay: 0.1s; }
+
+  @keyframes wave-bounce{
+    0%, 100%{ height: 6px; }
+    50%{ height: 26px; }
+  }
+
+  .mic-btn{
+    width: 66px; height: 66px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--cyan), var(--blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 26px rgba(56,189,248,0.5);
+    margin-bottom: 30px;
+    transition: transform 0.2s ease;
+  }
+
+  .mic-btn:hover{ transform: scale(1.06); }
+  .mic-btn svg{ width: 26px; height: 26px; }
+
+  .quick-phrases{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+
+  .chip{
+    padding: 9px 16px;
+    border-radius: 999px;
+    font-size: 13.5px;
+    color: var(--ice);
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .chip:hover{ background: rgba(56,189,248,0.14); border-color: rgba(56,189,248,0.4); }
+
+  .demo-nav{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+    border-top: 1px solid var(--panel-border);
+    padding-top: 26px;
+    width: 100%;
+  }
+
+  .demo-nav button{
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ice-dim);
+    padding: 6px 4px;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .demo-nav button:hover{ color: var(--cyan); border-color: var(--cyan); }
+
+  .demo-hint{
+    margin-top: 18px;
+    font-size: 12px;
+    color: var(--ice-dim);
+    opacity: 0.7;
+    text-align: center;
+    max-width: 420px;
+  }
+
+  /* ---------- ARCHITECTURE ---------- */
+  .cards{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+
+  @media (max-width: 900px){ .cards{ grid-template-columns: 1fr; } }
+
+  .card{
+    border-radius: 22px;
+    padding: 32px 26px;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+  }
+
+  .card:hover{ transform: translateY(-4px); border-color: rgba(56,189,248,0.4); }
+
+  .card-icon{
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(56,189,248,0.25), rgba(59,130,246,0.15));
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .card-icon svg{ width: 22px; height: 22px; stroke: var(--cyan); }
+
+  .card h3{
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  .card p{
+    font-size: 14.5px;
+    font-weight: 300;
+    color: var(--ice-dim);
+    line-height: 1.65;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top: 1px solid var(--panel-border);
+    padding: 40px 0;
+  }
+
+  .foot-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--ice-dim);
+  }
+
+  .foot-links{ display: flex; gap: 20px; flex-wrap: wrap; }
+  .foot-links a:hover{ color: var(--cyan); }
+
+  @media (max-width: 560px){
+    .foot-row{ flex-direction: column; text-align: center; }
+  }
+
+  /* Accessibility: visible focus */
+  a:focus-visible, button:focus-visible, input:focus-visible{
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .sphere-core, .orbit1, .orbit2, .orbit3, .wave span{ animation: none !important; }
+  }
 </style>
 </head>
 <body>
-<div class="cosmos">
-  <div class="milkyway"></div>
-  <div id="stars"></div>
-</div>
-<div class="page">
-  <div class="title">Приветствие АТИГ</div>
-  <div class="sphere" id="sphere">
-    <div class="orbit o1"><div class="electron" id="e1"></div></div>
-    <div class="orbit o2"><div class="electron" id="e2"></div></div>
-    <div class="orbit o3"><div class="electron" id="e3"></div></div>
-    <div class="nucleus"></div>
-  </div>
-  <div class="status">
-    <div class="msg show" id="msg">Нажмите на сферу</div>
-    <div class="wave" id="wave">
-      <div class="wb" style="--s:.3s"></div>
-      <div class="wb" style="--s:.5s"></div>
-      <div class="wb" style="--s:.4s"></div>
-      <div class="wb" style="--s:.6s"></div>
-      <div class="wb" style="--s:.35s"></div>
-      <div class="wb" style="--s:.5s"></div>
+
+<div id="starfield"></div>
+
+<header>
+  <div class="wrap header-row">
+    <div class="logo">ATIG</div>
+    <div class="header-right">
+      <div class="lang-switch glass" role="group" aria-label="Language switch">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="kk">KK</button>
+        <button class="lang-btn" data-lang="ru">RU</button>
+      </div>
+      <a href="#demo" class="btn-demo" data-i18n="nav_launch_demo">Launch Interactive Demo</a>
     </div>
-    <div class="hint" id="hint">ATIG · ОЖИДАНИЕ</div>
   </div>
-  <div class="langs">
-    <span class="pill" id="btn-privet">Привет</span>
-    <span class="pill" id="btn-zdravstvujte">Здравствуйте</span>
-    <span class="pill" id="btn-hello">Hello</span>
-    <span class="pill" id="btn-salam">Салам</span>
-    <span class="pill" id="btn-nihao">你好</span>
-    <span class="pill" id="btn-utro">Доброе утро</span>
-    <span class="pill" id="btn-vecher">Добрый вечер</span>
-    <span class="pill" id="btn-poka">Пока</span>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="wrap">
+      <span class="eyebrow" data-i18n="hero_eyebrow">SOVEREIGN AI ECOSYSTEM</span>
+      <h1 data-i18n="hero_title">Autonomous AI infrastructure with persistent long-term memory.</h1>
+      <p class="sub" data-i18n="hero_subtitle">A protected ecosystem of a personal AI companion. Preserving knowledge, experience, and digital legacy through a hybrid memory architecture built privacy-first.</p>
+
+      <form class="waitlist glass" id="waitlist-form">
+        <input type="email" required id="waitlist-email" data-i18n-placeholder="email_placeholder" placeholder="Your email address">
+        <button type="submit" data-i18n="join_waitlist">Join Waitlist</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- VOICE DEMO -->
+  <section id="demo">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="demo_title">Talk to ATIG</h2>
+        <p data-i18n="demo_subtitle">An interactive preview of your personal AI companion — speak, or tap a phrase below.</p>
+      </div>
+
+      <div class="demo-panel glass" id="demo-panel">
+        <div class="sphere-stage" id="sphere-stage">
+          <div class="orbit orbit3"><span class="electron"></span></div>
+          <div class="orbit orbit2"><span class="electron"></span></div>
+          <div class="orbit orbit1"><span class="electron"></span></div>
+          <div class="sphere-core"></div>
+        </div>
+
+        <div class="status-label" id="status-label" data-i18n="status_idle">IDLE</div>
+        <div class="transcript" id="transcript" data-i18n="demo_hint_start">Tap the microphone or choose a phrase to begin.</div>
+
+        <div class="wave" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+
+        <button class="mic-btn" id="mic-btn" aria-label="Toggle voice input">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#001018" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="23"></line>
+            <line x1="8" y1="23" x2="16" y2="23"></line>
+          </svg>
+        </button>
+
+        <div class="quick-phrases">
+          <button class="chip glass" data-phrase="Hello" data-phrase-lang="en">Hello</button>
+          <button class="chip glass" data-phrase="Привет" data-phrase-lang="ru">Привет</button>
+          <button class="chip glass" data-phrase="Салам" data-phrase-lang="kk">Салам</button>
+          <button class="chip glass" data-phrase="Здравствуйте" data-phrase-lang="ru">Здравствуйте</button>
+        </div>
+
+        <div class="demo-nav">
+          <button data-scroll="architecture" data-i18n="nav_about">About the Project</button>
+          <button data-scroll="hero" data-i18n="nav_mission">Mission</button>
+          <button data-scroll="site-footer" data-i18n="nav_contacts">Contacts</button>
+        </div>
+
+        <div class="demo-hint" data-i18n="demo_browser_hint">Voice recognition requires a browser that supports the Web Speech API (e.g. Chrome).</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section id="architecture">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="arch_title">Technological Foundation</h2>
+        <p data-i18n="arch_subtitle">Three principles hold the ATIG architecture together.</p>
+      </div>
+      <div class="cards">
+        <div class="card glass">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"></circle><circle cx="18" cy="6" r="2.5"></circle><circle cx="12" cy="18" r="2.5"></circle><line x1="8.2" y1="7" x2="10.5" y2="16.2"></line><line x1="15.8" y1="7" x2="13.5" y2="16.2"></line><line x1="8.4" y1="6" x2="15.6" y2="6"></line></svg>
+          </div>
+          <h3 data-i18n="card1_title">Persistent Knowledge Graph</h3>
+          <p data-i18n="card1_body">An end-to-end graph of knowledge that keeps context intact, retaining precision without decay as your history grows.</p>
+        </div>
+        <div class="card glass">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"></path></svg>
+          </div>
+          <h3 data-i18n="card2_title">Privacy-by-Design</h3>
+          <p data-i18n="card2_body">On-device local LLMs handle your data by default, with minimal, opt-in connections to the cloud for hybrid computing.</p>
+        </div>
+        <div class="card glass">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"></rect><line x1="8" y1="8" x2="16" y2="8"></line><line x1="8" y1="12" x2="16" y2="12"></line><line x1="8" y1="16" x2="12" y2="16"></line></svg>
+          </div>
+          <h3 data-i18n="card3_title">Life Archive Standard</h3>
+          <p data-i18n="card3_body">A durable standard for storing personal experience and knowledge, built to last for decades.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer id="site-footer">
+  <div class="wrap foot-row">
+    <div data-i18n="footer_copyright">© 2026 ATIG AI Ecosystem. All rights reserved.</div>
+    <div class="foot-links">
+      <a href="mailto:founder@atig.ai">founder@atig.ai</a>
+      <a href="#" data-i18n="footer_privacy">Privacy Policy</a>
+      <a href="#" data-i18n="footer_terms">Terms of Service</a>
+    </div>
   </div>
-  <div class="navbtns" id="navbtns">
-    <button class="nbtn" id="btn-about">О проекте</button>
-    <button class="nbtn" id="btn-mission">Миссия</button>
-    <button class="nbtn" id="btn-contact">Связаться</button>
-  </div>
-</div>
+</footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
-(function() {
+(function(){
+  "use strict";
 
-// Звёзды
-var st = document.getElementById('stars');
-for (var i = 0; i < 200; i++) {
-  var s = document.createElement('div');
-  s.className = 'star';
-  var sz = Math.random() * 2 + 0.4;
-  s.style.cssText = 'width:' + sz + 'px;height:' + sz + 'px;left:' + (Math.random()*100) + '%;top:' + (Math.random()*100) + '%;--d:' + (2+Math.random()*7) + 's;--delay:-' + (Math.random()*5) + 's;--lo:' + (0.05+Math.random()*0.2) + ';--hi:' + (0.4+Math.random()*0.5) + ';';
-  st.appendChild(s);
-}
+  /* ================= TRANSLATIONS ================= */
+  var translations = {
+    en: {
+      nav_launch_demo: "Launch Interactive Demo",
+      nav_about: "About the Project",
+      nav_mission: "Mission",
+      nav_contacts: "Contacts",
+      hero_eyebrow: "SOVEREIGN AI ECOSYSTEM",
+      hero_title: "Autonomous AI infrastructure with persistent long-term memory.",
+      hero_subtitle: "A protected ecosystem of a personal AI companion. Preserving knowledge, experience, and digital legacy through a hybrid memory architecture built privacy-first.",
+      email_placeholder: "Your email address",
+      join_waitlist: "Join Waitlist",
+      toast_thanks: "Thank you! You're on the waitlist.",
+      toast_invalid: "Please enter a valid email address.",
+      demo_title: "Talk to ATIG",
+      demo_subtitle: "An interactive preview of your personal AI companion — speak, or tap a phrase below.",
+      demo_hint_start: "Tap the microphone or choose a phrase to begin.",
+      demo_browser_hint: "Voice recognition requires a browser that supports the Web Speech API (e.g. Chrome).",
+      status_idle: "IDLE",
+      status_listening: "LISTENING",
+      status_speaking: "SPEAKING",
+      reply_hello: "Hello. I'm ATIG, your personal AI guardian. How can I help you today?",
+      reply_generic: "I've noted that. Your context is safely stored in your local memory vault.",
+      arch_title: "Technological Foundation",
+      arch_subtitle: "Three principles hold the ATIG architecture together.",
+      card1_title: "Persistent Knowledge Graph",
+      card1_body: "An end-to-end graph of knowledge that keeps context intact, retaining precision without decay as your history grows.",
+      card2_title: "Privacy-by-Design",
+      card2_body: "On-device local LLMs handle your data by default, with minimal, opt-in connections to the cloud for hybrid computing.",
+      card3_title: "Life Archive Standard",
+      card3_body: "A durable standard for storing personal experience and knowledge, built to last for decades.",
+      footer_copyright: "© 2026 ATIG AI Ecosystem. All rights reserved.",
+      footer_privacy: "Privacy Policy",
+      footer_terms: "Terms of Service"
+    },
+    kk: {
+      nav_launch_demo: "Интерактивті демоны іске қосу",
+      nav_about: "Жоба туралы",
+      nav_mission: "Миссия",
+      nav_contacts: "Байланыс",
+      hero_eyebrow: "СУВЕРЕНДІ AI ЭКОЖҮЙЕСІ",
+      hero_title: "Ұзақ мерзімді тұрақты жады бар автономды AI инфрақұрылымы.",
+      hero_subtitle: "Жеке AI серіктестің қорғалған экожүйесі. Білім, тәжірибе және цифрлық мұраны құпиялылыққа бағдарланған гибридті жады архитектурасы арқылы сақтау.",
+      email_placeholder: "Электрондық поштаңыз",
+      join_waitlist: "Күту тізіміне қосылу",
+      toast_thanks: "Рақмет! Сіз күту тізіміне қосылдыңыз.",
+      toast_invalid: "Жарамды электрондық пошта мекенжайын енгізіңіз.",
+      demo_title: "ATIG-пен сөйлесіңіз",
+      demo_subtitle: "Жеке AI серіктестің интерактивті алдын ала қарауы — сөйлеңіз немесе төмендегі сөз тіркесін таңдаңыз.",
+      demo_hint_start: "Бастау үшін микрофонды түртіңіз немесе сөз тіркесін таңдаңыз.",
+      demo_browser_hint: "Дауысты тану Web Speech API қолдайтын браузерді талап етеді (мысалы, Chrome).",
+      status_idle: "КҮТУДЕ",
+      status_listening: "ТЫҢДАУДА",
+      status_speaking: "СӨЙЛЕУДЕ",
+      reply_hello: "Сәлем. Мен ATIG-пін, сіздің жеке AI қорғаушыңызбын. Сізге қалай көмектесе аламын?",
+      reply_generic: "Мен мұны есте сақтадым. Сіздің контекстіңіз жергілікті жад қоймасында қауіпсіз сақталады.",
+      arch_title: "Технологиялық негіз",
+      arch_subtitle: "ATIG архитектурасын үш қағида ұстап тұрады.",
+      card1_title: "Тұрақты білім графы",
+      card1_body: "Тарихыңыз өскен сайын дәлдігін жоғалтпай, контекстті тұтас сақтайтын тұтас білім графы.",
+      card2_title: "Privacy-by-Design қағидасы",
+      card2_body: "Жергілікті LLM модельдері деректеріңізді әдепкі бойынша өңдейді, бұлтқа қосылу минималды әрі ерікті түрде жүзеге асады.",
+      card3_title: "Life Archive стандарты",
+      card3_body: "Жеке тәжірибе мен білімді ондаған жылдар бойы сақтауға арналған төзімді стандарт.",
+      footer_copyright: "© 2026 ATIG AI Ecosystem. Барлық құқықтар қорғалған.",
+      footer_privacy: "Құпиялылық саясаты",
+      footer_terms: "Пайдалану шарттары"
+    },
+    ru: {
+      nav_launch_demo: "Запустить интерактивное демо",
+      nav_about: "О проекте",
+      nav_mission: "Миссия",
+      nav_contacts: "Контакты",
+      hero_eyebrow: "СУВЕРЕННАЯ AI-ЭКОСИСТЕМА",
+      hero_title: "Автономная ИИ-инфраструктура с непрерывной долгосрочной памятью.",
+      hero_subtitle: "Защищённая экосистема персонального ИИ-спутника. Сохранение знаний, опыта и цифрового наследия на базе гибридной архитектуры памяти и приоритета приватности.",
+      email_placeholder: "Ваш email",
+      join_waitlist: "В лист ожидания",
+      toast_thanks: "Спасибо! Вы добавлены в лист ожидания.",
+      toast_invalid: "Пожалуйста, введите корректный email.",
+      demo_title: "Поговорите с ATIG",
+      demo_subtitle: "Интерактивное превью вашего персонального ИИ-спутника — скажите что-нибудь или выберите фразу ниже.",
+      demo_hint_start: "Нажмите на микрофон или выберите фразу, чтобы начать.",
+      demo_browser_hint: "Для распознавания голоса нужен браузер с поддержкой Web Speech API (например, Chrome).",
+      status_idle: "ОЖИДАНИЕ",
+      status_listening: "СЛУШАЮ",
+      status_speaking: "ГОВОРЮ",
+      reply_hello: "Здравствуйте. Я ATIG, ваш персональный ИИ-хранитель. Чем могу помочь?",
+      reply_generic: "Я это запомнил. Ваш контекст надёжно сохранён в локальном хранилище памяти.",
+      arch_title: "Технологический фундамент",
+      arch_subtitle: "Три принципа держат архитектуру ATIG.",
+      card1_title: "Сквозной граф знаний",
+      card1_body: "Единый граф знаний, который удерживает контекст и не теряет точность по мере роста вашей истории.",
+      card2_title: "Приватность и гибридные вычисления",
+      card2_body: "Локальные LLM на устройстве обрабатывают данные по умолчанию, с минимальным и опциональным подключением к облаку.",
+      card3_title: "Стандарт цифрового наследия",
+      card3_body: "Надёжный стандарт хранения личного опыта и знаний, рассчитанный на десятилетия.",
+      footer_copyright: "© 2026 ATIG AI Ecosystem. Все права защищены.",
+      footer_privacy: "Политика конфиденциальности",
+      footer_terms: "Условия использования"
+    }
+  };
 
-// Электроны
-var t = 0;
-setInterval(function() {
-  t += 0.018;
-  var e1 = document.getElementById('e1');
-  var e2 = document.getElementById('e2');
-  var e3 = document.getElementById('e3');
-  if (e1) e1.style.transform = 'translate(' + (Math.cos(t)*118) + 'px,' + (Math.sin(t)*43) + 'px) translate(-50%,-50%)';
-  if (e2) e2.style.transform = 'translate(' + (Math.cos(-t*0.75)*98) + 'px,' + (Math.sin(-t*0.75)*36) + 'px) translate(-50%,-50%)';
-  if (e3) e3.style.transform = 'translate(' + (Math.cos(t*0.55+2)*83) + 'px,' + (Math.sin(t*0.55+2)*30) + 'px) translate(-50%,-50%)';
-}, 16);
+  var currentLang = "en";
 
-// Словарь
-var GREETINGS = [
-  {re:/привет|хай/i, say:['Привет!','Привет-привет!','Рад тебя слышать!']},
-  {re:/здравствуй/i, say:['Здравствуйте!','Здравствуй!']},
-  {re:/доброе утро/i, say:['Доброе утро!','Утро доброе!']},
-  {re:/добрый день/i, say:['Добрый день!']},
-  {re:/добрый вечер/i, say:['Добрый вечер!','Вечер добрый!']},
-  {re:/салам/i, say:['Салам!','Салам-салам!']},
-  {re:/hello|hi|hey/i, say:['Hello!','Hi there!']},
-  {re:/你好/i, say:['你好！']},
-  {re:/пока|bye/i, say:['До свидания!','Пока! Возвращайся.']},
-];
+  function applyTranslations(lang){
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    var dict = translations[lang] || translations.en;
 
-var INFO = {
-  about: 'ATIG — глобальная платформа для сохранения человеческой памяти и наследия. От рождения до вечности.',
-  mission: 'Миссия ATIG — сделать каждого человека лучше. Свет вселенной. Вечность.',
-  contact: 'Для связи с командой ATIG — посетите сайт atig.ai',
-};
+    document.querySelectorAll("[data-i18n]").forEach(function(el){
+      var key = el.getAttribute("data-i18n");
+      if (dict[key]) el.textContent = dict[key];
+    });
 
-function isGreeting(text) {
-  for (var i = 0; i < GREETINGS.length; i++) {
-    if (GREETINGS[i].re.test(text)) return true;
-  }
-  return false;
-}
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(function(el){
+      var key = el.getAttribute("data-i18n-placeholder");
+      if (dict[key]) el.setAttribute("placeholder", dict[key]);
+    });
 
-function getReply(text) {
-  for (var i = 0; i < GREETINGS.length; i++) {
-    if (GREETINGS[i].re.test(text)) {
-      var arr = GREETINGS[i].say;
-      return arr[Math.floor(Math.random() * arr.length)];
+    document.querySelectorAll(".lang-btn").forEach(function(btn){
+      btn.classList.toggle("active", btn.getAttribute("data-lang") === lang);
+    });
+
+    // Refresh idle status label if not mid-interaction
+    var statusLabel = document.getElementById("status-label");
+    if (statusLabel && statusLabel.getAttribute("data-current-state") !== "busy") {
+      statusLabel.textContent = dict.status_idle;
     }
   }
-  return null;
-}
 
-// Элементы
-var sphereEl = document.getElementById('sphere');
-var msgEl    = document.getElementById('msg');
-var hintEl   = document.getElementById('hint');
-var waveEl   = document.getElementById('wave');
-var navbtns  = document.getElementById('navbtns');
-
-var state      = 'idle';
-var greeted    = false;
-var listenTimer = null;
-var autoTimer   = null;
-var recog       = null;
-
-var hasMic = ('webkitSpeechRecognition' in window) || ('SpeechRecognition' in window);
-
-function showMsg(text) {
-  msgEl.classList.remove('show');
-  setTimeout(function() {
-    msgEl.textContent = text;
-    msgEl.classList.add('show');
-  }, 150);
-}
-
-function setState(s) {
-  state = s;
-  if (s === 'idle') sphereEl.className = 'sphere';
-  else sphereEl.className = 'sphere ' + s;
-  if (s === 'listening') waveEl.className = 'wave show';
-  else waveEl.className = 'wave';
-  var hints = {idle:'ATIG · ОЖИДАНИЕ', listening:'ATIG · СЛУШАЕТ', speaking:'ATIG · ГОВОРИТ'};
-  hintEl.textContent = hints[s] || '';
-}
-
-function speak(text, onDone) {
-  if (!window.speechSynthesis) {
-    setTimeout(onDone || function(){}, 2000);
-    return;
-  }
-  window.speechSynthesis.cancel();
-  var u = new SpeechSynthesisUtterance(text);
-  if (/你好/.test(text)) u.lang = 'zh-CN';
-  else u.lang = 'ru-RU';
-  u.rate = 0.95;
-  u.pitch = 1.05;
-  u.volume = 1;
-  u.onend = onDone || function(){};
-  u.onerror = onDone || function(){};
-  window.speechSynthesis.speak(u);
-}
-
-function afterGreeting() {
-  greeted = true;
-  setState('idle');
-  navbtns.classList.add('show');
-  scheduleListen(1500);
-}
-
-function respond(text) {
-  clearTimeout(listenTimer);
-  clearTimeout(autoTimer);
-  if (recog) { try { recog.abort(); } catch(e){} recog = null; }
-
-  if (isGreeting(text)) {
-    var reply = getReply(text);
-    setState('speaking');
-    showMsg(reply);
-    speak(reply, function() {
-      if (!greeted) {
-        setTimeout(function() {
-          setState('speaking');
-          var intro = 'Я — ATIG. Персональный интеллект нового поколения. Рад приветствовать вас.';
-          showMsg(intro);
-          speak(intro, afterGreeting);
-        }, 400);
-      } else {
-        setState('idle');
-        showMsg('...');
-        scheduleListen(800);
-      }
+  document.querySelectorAll(".lang-btn").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      applyTranslations(btn.getAttribute("data-lang"));
     });
-  } else {
-    scheduleListen(500);
+  });
+
+  /* ================= TOAST ================= */
+  var toastEl = document.getElementById("toast");
+  var toastTimer = null;
+
+  function showToast(message, ok){
+    toastEl.textContent = message;
+    toastEl.style.background = ok
+      ? "linear-gradient(135deg, rgba(56,189,248,0.95), rgba(59,130,246,0.95))"
+      : "rgba(220,60,60,0.9)";
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 3200);
   }
-}
 
-function scheduleListen(d) {
-  clearTimeout(listenTimer);
-  listenTimer = setTimeout(startListening, d || 800);
-}
+  /* ================= WAITLIST FORM ================= */
+  var form = document.getElementById("waitlist-form");
+  var emailInput = document.getElementById("waitlist-email");
 
-function startListening() {
-  if (state === 'speaking') return;
-  if (!hasMic) { setState('listening'); showMsg('Нажми на кнопку ниже'); return; }
-  if (recog) { try { recog.abort(); } catch(e){} recog = null; }
-  setState('listening');
-  showMsg(greeted ? '...' : 'ATIG слушает…');
-  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  var r = new SR();
-  r.lang = 'ru-RU';
-  r.continuous = false;
-  r.interimResults = false;
-  r.onresult = function(e) { recog = null; respond(e.results[0][0].transcript); };
-  r.onerror  = function()  { recog = null; };
-  r.onend    = function()  { recog = null; };
-  try { r.start(); recog = r; } catch(e) { scheduleListen(1500); }
-}
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var dict = translations[currentLang] || translations.en;
+    var value = emailInput.value.trim();
+    var valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    if (!valid){
+      showToast(dict.toast_invalid, false);
+      return;
+    }
+    showToast(dict.toast_thanks, true);
+    form.reset();
+  });
 
-function handleTap() {
-  clearTimeout(autoTimer);
-  if (state === 'speaking') return;
-  clearTimeout(listenTimer);
-  if (recog) { try { recog.abort(); } catch(e){} recog = null; }
-  // Разблокировка звука
-  window.speechSynthesis.cancel();
-  startListening();
-}
+  /* ================= NAV SCROLL BUTTONS ================= */
+  document.querySelectorAll("[data-scroll]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var target = document.getElementById(btn.getAttribute("data-scroll"));
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
 
-function manualGreet(word) {
-  clearTimeout(listenTimer);
-  clearTimeout(autoTimer);
-  if (recog) { try { recog.abort(); } catch(e){} recog = null; }
-  // Разблокировка звука при нажатии
-  window.speechSynthesis.cancel();
-  respond(word);
-}
+  /* ================= STARFIELD (CSS-driven, generated once) ================= */
+  (function initStars(){
+    var field = document.getElementById("starfield");
+    var count = window.innerWidth < 640 ? 70 : 140;
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < count; i++){
+      var star = document.createElement("div");
+      var size = (Math.random() * 1.6 + 0.6).toFixed(2);
+      star.style.position = "absolute";
+      star.style.left = (Math.random() * 100) + "%";
+      star.style.top = (Math.random() * 100) + "%";
+      star.style.width = size + "px";
+      star.style.height = size + "px";
+      star.style.borderRadius = "50%";
+      star.style.background = "#dce9f7";
+      star.style.opacity = (Math.random() * 0.6 + 0.25).toFixed(2);
+      star.style.animation = "twinkle " + (Math.random() * 4 + 2.5).toFixed(2) + "s ease-in-out infinite";
+      star.style.animationDelay = (Math.random() * 4).toFixed(2) + "s";
+      frag.appendChild(star);
+    }
+    field.appendChild(frag);
 
-// Привязка кнопок
-sphereEl.addEventListener('click', handleTap);
-document.getElementById('btn-privet').addEventListener('click', function(){ manualGreet('Привет'); });
-document.getElementById('btn-zdravstvujte').addEventListener('click', function(){ manualGreet('Здравствуйте'); });
-document.getElementById('btn-hello').addEventListener('click', function(){ manualGreet('Hello'); });
-document.getElementById('btn-salam').addEventListener('click', function(){ manualGreet('Салам'); });
-document.getElementById('btn-nihao').addEventListener('click', function(){ manualGreet('你好'); });
-document.getElementById('btn-utro').addEventListener('click', function(){ manualGreet('Доброе утро'); });
-document.getElementById('btn-vecher').addEventListener('click', function(){ manualGreet('Добрый вечер'); });
-document.getElementById('btn-poka').addEventListener('click', function(){ manualGreet('Пока'); });
-document.getElementById('btn-about').addEventListener('click', function(){
-  setState('speaking'); showMsg(INFO.about); speak(INFO.about, function(){ setState('idle'); showMsg('...'); scheduleListen(1000); });
-});
-document.getElementById('btn-mission').addEventListener('click', function(){
-  setState('speaking'); showMsg(INFO.mission); speak(INFO.mission, function(){ setState('idle'); showMsg('...'); scheduleListen(1000); });
-});
-document.getElementById('btn-contact').addEventListener('click', function(){
-  setState('speaking'); showMsg(INFO.contact); speak(INFO.contact, function(){ setState('idle'); showMsg('...'); scheduleListen(1000); });
-});
+    var styleTag = document.createElement("style");
+    styleTag.textContent = "@keyframes twinkle{0%,100%{opacity:0.15;}50%{opacity:0.9;}}";
+    document.head.appendChild(styleTag);
+  })();
 
-// Автоприветствие через 15 сек
-autoTimer = setTimeout(function() {
-  if (state === 'idle' && !greeted) {
-    setState('speaking');
-    var m = 'Здравствуйте. Если хотите познакомиться — нажмите на сферу или кнопку ниже.';
-    showMsg(m);
-    speak(m, function() { setState('idle'); showMsg('Нажмите на сферу'); });
+  /* ================= VOICE DEMO ================= */
+  var sphereStage = document.getElementById("sphere-stage");
+  var demoPanel = document.getElementById("demo-panel");
+  var statusLabel = document.getElementById("status-label");
+  var transcriptEl = document.getElementById("transcript");
+  var micBtn = document.getElementById("mic-btn");
+
+  var SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var recognition = null;
+  var isListening = false;
+
+  function setState(state){
+    sphereStage.classList.remove("state-listening", "state-speaking");
+    demoPanel.classList.remove("is-listening", "is-speaking");
+    var dict = translations[currentLang] || translations.en;
+
+    if (state === "listening"){
+      sphereStage.classList.add("state-listening");
+      demoPanel.classList.add("is-listening");
+      statusLabel.textContent = dict.status_listening;
+      statusLabel.setAttribute("data-current-state", "busy");
+    } else if (state === "speaking"){
+      sphereStage.classList.add("state-speaking");
+      demoPanel.classList.add("is-speaking");
+      statusLabel.textContent = dict.status_speaking;
+      statusLabel.setAttribute("data-current-state", "busy");
+    } else {
+      statusLabel.textContent = dict.status_idle;
+      statusLabel.setAttribute("data-current-state", "idle");
+    }
   }
-}, 15000);
 
-// Старт
-setState('idle');
-showMsg('Нажмите на сферу');
-msgEl.classList.add('show');
+  function speechLangCode(lang){
+    if (lang === "ru") return "ru-RU";
+    if (lang === "kk") return "kk-KZ";
+    return "en-US";
+  }
 
+  function speak(text, lang){
+    setState("speaking");
+    transcriptEl.textContent = text;
+    if ("speechSynthesis" in window){
+      try {
+        window.speechSynthesis.cancel();
+        var utter = new SpeechSynthesisUtterance(text);
+        utter.lang = speechLangCode(lang);
+        utter.onend = function(){ setState("idle"); };
+        utter.onerror = function(){ setState("idle"); };
+        window.speechSynthesis.speak(utter);
+        return;
+      } catch (err) { /* fall through to timeout */ }
+    }
+    setTimeout(function(){ setState("idle"); }, 1800);
+  }
+
+  function respondTo(phrase, lang){
+    var dict = translations[lang] || translations[currentLang] || translations.en;
+    var normalized = phrase.trim().toLowerCase();
+    var isGreeting = ["hello", "привет", "здравствуйте", "салам", "сәлем"].indexOf(normalized) !== -1;
+    var reply = isGreeting ? dict.reply_hello : dict.reply_generic;
+    speak(reply, lang);
+  }
+
+  document.querySelectorAll("[data-phrase]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var phrase = btn.getAttribute("data-phrase");
+      var lang = btn.getAttribute("data-phrase-lang") || currentLang;
+      transcriptEl.textContent = phrase;
+      setState("listening");
+      setTimeout(function(){ respondTo(phrase, lang); }, 700);
+    });
+  });
+
+  function startListening(){
+    if (!SpeechRecognitionCtor){
+      var dict = translations[currentLang] || translations.en;
+      transcriptEl.textContent = dict.demo_browser_hint;
+      return;
+    }
+    recognition = new SpeechRecognitionCtor();
+    recognition.lang = speechLangCode(currentLang);
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = function(){
+      isListening = true;
+      setState("listening");
+      transcriptEl.textContent = "";
+    };
+
+    recognition.onresult = function(event){
+      var said = event.results[0][0].transcript;
+      transcriptEl.textContent = said;
+      respondTo(said, currentLang);
+    };
+
+    recognition.onerror = function(){
+      setState("idle");
+      isListening = false;
+    };
+
+    recognition.onend = function(){
+      isListening = false;
+    };
+
+    try { recognition.start(); } catch (err) { setState("idle"); }
+  }
+
+  micBtn.addEventListener("click", function(){
+    if (isListening && recognition){
+      recognition.stop();
+      setState("idle");
+      return;
+    }
+    startListening();
+  });
+
+  /* ================= INIT ================= */
+  applyTranslations("en");
 })();
 </script>
+
 </body>
 </html>
